@@ -1,5 +1,6 @@
 class User:
-    def __init__(self, first_name, last_name, address, town, country, phone_number, email, password):
+    def __init__(self, username: object, first_name: object, last_name: object, address: object, town: object, country: object, phone_number: object, email: object, password: object) -> object:
+        self.username = username
         self.first_name = first_name
         self.last_name = last_name
         self.address = address
@@ -8,3 +9,21 @@ class User:
         self.phone_number = phone_number
         self.email = email
         self.password = password
+
+    @property
+    def is_active(self):
+        return True
+
+    @property
+    def is_authenticated(self):
+        return self.is_active
+
+    @property
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        try:
+            return str(self.id)
+        except AttributeError:
+            raise NotImplementedError("No `id` attribute - override `get_id`") from None

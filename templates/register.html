@@ -8,6 +8,13 @@
  <form method="POST" action="">
         {{ form.hidden_tag() }}
         {{ form.username() }}
+        {{ form.first_name() }}
+        {{ form.last_name() }}
+        {{ form.address() }}
+        {{ form.town() }}
+        {{ form.country() }}
+        {{ form.phone_number() }}
+        {{ form.email() }}
         {{ form.password() }}
         {{ form.submit() }}
     </form>
