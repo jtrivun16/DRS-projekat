@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, redirect
+from flask import Flask, render_template, url_for, redirect, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, LoginManager, login_user, logout_user, login_required
 from flask_wtf import FlaskForm
@@ -25,15 +25,6 @@ login_manager.login_view = "login"
 @login_manager.user_loader  # reload user obj from the user id stored in the session
 def load_user(user_id):
     return User.query.get(user_id)
-
-
-# class Todo(db.Model):
-#    id = db.Column(db.Integer, primary_key=True)
-#    content = db.Column(db.String(200), nullable=False)
-#    date_created = db.Column(db.DateTime, default=datetime.utcnow)
-
-#   def __repr__(self):
-#      return '<Task %r>' % self.id
 
 
 class User(db.Model, Models.User.User):  # if some error occur check User Mixin class
@@ -78,7 +69,7 @@ class RegisterForm(FlaskForm):
     submit = SubmitField("Register")
 
     @staticmethod
-    def validate_username(self, username):
+    def validate_username( username):
         existing_user_username = User.query.filter_by(username=username.data).first()
         if existing_user_username:
             raise ValidationError(
@@ -100,20 +91,43 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegisterForm()
+
+    print("Hey Yo")
+    if form.validate_on_submit():
+        print("Hey  Yooooo")
+        hashed_password = bcrypt.generate_password_hash(form.password.data)
+
+        new_user = User(username=form.username.data, first_name=form.first_name.data, last_name=form.last_name.data,
+                        address=form.address.data, town=form.town.data, country=form.country.data,
+                        phone_number=form.phone_number.data, email=form.email.data, password=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
+        return redirect(url_for('login'))
+
+    print(form.errors)
+    return render_template('register.html', form=form)
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-    if form.validate_on_submit():
+    if not form.validate_on_submit():
+        return render_template('login.html', form=form)
+    else:
         user = User.query.filter_by(username=form.username.data).first()
-        if user:
+        if user is not None:
             if bcrypt.check_password_hash(user.password, form.password.data):
                 load_user(user.id)
 
                 login_user(user)
                 return redirect(url_for('dashboard'))
                 # return render_template('dashboard.html')
-    else:
-        return render_template('login.html', form=form)
+        else:
+            flash('Invalid username or password', 'warning')
+            return render_template('login.html', form=form)
 
 
 @app.route('/logout', methods=['GET', 'POST'])
@@ -129,27 +143,5 @@ def dashboard():
     return render_template('dashboard.html')
 
 
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    form = RegisterForm()
-
-    print("Hey Yo")
-    if form.validate_on_submit():
-        print("Hey  Yooooo")
-        hashed_password = bcrypt.generate_password_hash(form.password.data)
-
-        new_user = User(username=form.username.data, first_name=form.first_name.data, last_name=form.last_name.data,
-                        address=form.address.data, town=form.town.data,   country=form.country.data,
-                        phone_number=form.phone_number.data, email=form.email.data, password=hashed_password)
-        db.session.add(new_user)
-        db.session.commit()
-        return redirect(url_for('login'))
-
-    print(form.errors)
-    return render_template('register.html', form=form)
-
-
 if __name__ == "__main__":
     app.run(port=8000, debug=True)
-
-
