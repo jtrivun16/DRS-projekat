@@ -14,7 +14,7 @@ def create_app():
     app = Flask(__name__)
     # /// relative path and //// is absolute
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'  # connects app to db
-    app.config['SECRET_KEY'] = 'admin'  # secret key is used to secure session cookie
+    app.config['SECRET_KEY'] = '5b7a999ef7ec373f5b06b2fe04df1925'  # secret key is used to secure session cookie
     db .init_app(app)  # creates db instance
     bcrypt.init_app(app)
 
