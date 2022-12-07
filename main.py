@@ -1,6 +1,9 @@
-from Models.User import User
+from __init__ import create_app
 
 
+app = create_app()
 
-student1 = User("ema", "ristic", "ns", "ns", "srb", 123, "em@.com", "luna")
-print(student1.last_name)
+
+if __name__ == "__main__":
+    app.run(port=8000, debug=True)
+
