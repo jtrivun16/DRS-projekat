@@ -6,7 +6,7 @@
 </head>
 <body>
  <form method="POST" action="">
-        {{ form.hidden_tag() }}
+        {{ form.hidden_tag() }} <!--this is adding csrf token, part of protection-->
         {{ form.username() }}
         {{ form.first_name() }}
         {{ form.last_name() }}

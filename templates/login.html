@@ -13,17 +13,6 @@
         {{ form.password() }}
         {{ form.submit() }}
     </form>
-    <!--make this disappear when click start typing again-->
-     {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert= {{ category}}} alert dismissible fade show" role="alert">
-                    <span>{{ message }}</span>
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-
-    <a>Not a member? <a href="{{url_for('register')}}">register now</a></a>
+    <a>Not a member? <a href="{{url_for('auth.register')}}">register now</a></a>
 </body>
 </html>
