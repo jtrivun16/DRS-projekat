@@ -6,6 +6,6 @@
 
 {% block body %}
     <h1>Dobrodošli u našu banku!</h1>
-    <a href="{{url_for('login')}}">Prijavi se</a></br>
-    <a href="{{url_for('register')}}">Registruj se</a>
+    <a href="{{url_for('auth.login')}}">Prijavi se</a></br>
+    <a href="{{url_for('auth.register')}}">Registruj se</a>
 {% endblock%}
