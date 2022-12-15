@@ -3,16 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device=width, initial-scale=1.0">
-    <title>Log in</title>
+    <title>LOG IN</title>
+    <style>
+        body, html {
+            height: 100%;
+            background-color: burlywood;
+            font-family: Arial, Helvetica, sans-serif
+        }
+
+        h1{
+            text-align: center;
+            font-size: 36px;
+        }
+        .myDiv{
+            height: 200px;
+            width: 50%;
+            border: 3px outset beige ;
+            background-color: burlywood;
+            text-align: center;
+            position: relative;
+            left: 320px;
+
+        }
+
+        label{
+            font-size: 25px;
+        }
+
+        a{
+            text-align: center;
+            font-size: 20px;
+            position: relative;
+            left: 500px;
+        }
+        
+    </style>
+    
 </head>
 <body>
-    <h1>Login page</h1>
-    <form method="POST" action="">
-        {{ form.hidden_tag() }}
-        {{ form.username() }}
-        {{ form.password() }}
-        {{ form.submit() }}
-    </form>
+    
+    <h1>Prijava korisnika</h1>
+    <div class="myDiv">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <label> Korisničko ime </label><br>
+            {{ form.username() }}<br><br>
+            <label> Lozinka </label><br>
+            {{ form.password() }}<br><br>
+            {{ form.submit() }}
+        </form>
+    </div>
+    
     <!--make this disappear when click start typing again-->
      {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -24,6 +65,6 @@
         {% endif %}
     {% endwith %}
 
-    <a>Not a member? <a href="{{url_for('register')}}">register now</a></a>
+    <a>Niste registrovani? <a href="{{url_for('register')}}">Registruj se sada</a></a>
 </body>
 </html>

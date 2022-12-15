@@ -42,31 +42,31 @@ class User(db.Model, Models.User.User):  # if some error occur check User Mixin 
 
 class RegisterForm(FlaskForm):
     username = StringField(validators=[InputRequired(), Length(
-        min=4, max=20)], render_kw={"placeholder": "Username"})
+        min=4, max=20)], render_kw={"placeholder": "Korisničko ime"})
 
     first_name = StringField(validators=[InputRequired(), Length(
-        min=3, max=20)], render_kw={"placeholder": "FirstName"})
+        min=3, max=20)], render_kw={"placeholder": "Ime"})
 
     last_name = StringField(validators=[InputRequired(), Length(
-        min=4, max=20)], render_kw={"placeholder": "LastName"})
+        min=4, max=20)], render_kw={"placeholder": "Prezime"})
 
     address = StringField(validators=[InputRequired(), Length(
-        min=4, max=35)], render_kw={"placeholder": "Address"})
+        min=4, max=35)], render_kw={"placeholder": "Adresa"})
 
     town = StringField(validators=[InputRequired(), Length(
-        min=4, max=20)], render_kw={"placeholder": "Town"})
+        min=4, max=20)], render_kw={"placeholder": "Grad"})
 
     country = StringField(validators=[InputRequired(), Length(
-        min=4, max=20)], render_kw={"placeholder": "Country"})
+        min=4, max=20)], render_kw={"placeholder": "Država"})
 
-    phone_number = IntegerField(validators=[InputRequired()], render_kw={"placeholder": "Phone number"})
+    phone_number = IntegerField(validators=[InputRequired()], render_kw={"placeholder": "Broj telefona"})
 
     email = EmailField(validators=[InputRequired()], render_kw={'placeholder': "example@gmail.com"})
 
     password = PasswordField(validators=[InputRequired(), Length(
-        min=4, max=20)], render_kw={"placeholder": "Password"})
+        min=4, max=20)], render_kw={"placeholder": "Lozinka"})
 
-    submit = SubmitField("Register")
+    submit = SubmitField("Registruj se")
 
     @staticmethod
     def validate_username( username):
@@ -79,10 +79,10 @@ class RegisterForm(FlaskForm):
 
 class LoginForm(FlaskForm):
     username = StringField(validators=[InputRequired(), Length(
-        min=4, max=20)], render_kw={"placeholder": "Username"})
+        min=4, max=20)], render_kw={"placeholder": "Korisničko ime"})
     password = PasswordField(validators=[InputRequired(), Length(
-        min=4, max=20)], render_kw={"placeholder": "Password"})
-    submit = SubmitField("Login")
+        min=4, max=20)], render_kw={"placeholder": "Lozinka"})
+    submit = SubmitField("Prijavi se")
 
 
 # create index route
