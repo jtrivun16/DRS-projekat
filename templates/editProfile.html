@@ -3,30 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <title>Edit profile</title>
+    <style>
+        body{
+            background: #221647;
+
+        }
+        .myDiv{
+            height: 600px;
+            width: 70%;
+            border: 3px outset beige ;
+            background-color: white;
+            text-align: center;
+            position: relative;
+            top: 50px;
+            left: 220px;
+        }
+        .tabela{
+            height: 500px;
+            width: 45%;
+            border: 3px outset beige ;
+            background-color: beige;
+            text-align: center;
+            position: relative;
+            top: 50px;
+            left: 280px;
+
+        }
+        table{
+            width:45%;
+            height: 450px;
+            text-align:center;
+            margin-left:auto;
+            margin-right:auto;
+        }
+
+        a:link, a:visited {
+            color: beige;
+            text-decoration: underline;
+            cursor: pointer;
+          }
+    </style>
 </head>
 <body>
-   <form method="POST" action="" enctype="multipart/form-data">
+    <a href="{{url_for('auth.back')}}">Vrati se na prethodnu stranicu <a/>
+
+   <div class="myDiv">
+
+        <form method="POST" action="" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
-            <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Account Info</legend>
-                <table>
-                    <tr><td><label>Username</label></td><td> {{ form.username }}</td></tr>
-                    <tr><td><label>First name</label></td><td> {{ form.first_name}}</td></tr>
-                    <tr><td><label>Last name</label></td><td> {{ form.last_name}}</td></tr>
-                    <tr><td><label>Address</label></td><td> {{ form.address}}</td></tr>
-                    <tr><td><label>Town</label></td><td> {{ form.town}}</td></tr>
-                    <tr><td><label>Country</label></td><td> {{ form.country}}</td></tr>
-                    <tr><td><label>Number</label></td><td> {{ form.phone_number}}</td></tr>
-                    <tr><td><label>Email</label></td><td> {{ form.email}}</td></tr>
-                    <tr><td><label>Password</label></td><td> {{ form.password}}</td></tr>
+            <div class="tabela">
+                <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Podaci o nalogu</legend>
 
-                </table>
-
-
-
-
-
-
+                    <table>
+                    
+                        <tr><td><label>Username</label></td><td> {{ form.username }}</td></tr>
+                        <tr><td><label>First name</label></td><td> {{ form.first_name}}</td></tr>
+                        <tr><td><label>Last name</label></td><td> {{ form.last_name}}</td></tr>
+                        <tr><td><label>Address</label></td><td> {{ form.address}}</td></tr>
+                        <tr><td><label>Town</label></td><td> {{ form.town}}</td></tr>
+                        <tr><td><label>Country</label></td><td> {{ form.country}}</td></tr>
+                        <tr><td><label>Number</label></td><td> {{ form.phone_number}}</td></tr>
+                        <tr><td><label>Email</label></td><td> {{ form.email}}</td></tr>
+                        <tr><td><label>Password</label></td><td> {{ form.password}}</td></tr>
+                    </table>
+                
+                </fieldset>
+                 <div class="form-group" >
+                    {{ form.submit }}
+                </div>
+            </div>
                 <!--label>Address</label>
                 {{ form.address}}
 
@@ -44,10 +90,7 @@
 
 
 
-            </fieldset>
-            <div class="form-group">
-                {{ form.submit }}
-            </div>
         </form>
+    <div>
 </body>
 </html>

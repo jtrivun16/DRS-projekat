@@ -97,3 +97,8 @@ def update_profile():
 
     return render_template('editProfile.html', form=form)
 
+@auth.route('/dashboard', methods=['GET', 'POST'])
+@login_required
+def back():
+    return redirect(url_for('views.dashboard'))
+
