@@ -2,13 +2,59 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Ulogovan</title>
+    <style>
+      body, html
+      {
+        height: 100%;
+        margin: 0;
+        background: center/cover url("../static/bank.jpg") fixed no-repeat;
+
+      }
+      a:link, a:visited {
+        color: #221647;
+        text-decoration: underline;
+        cursor: pointer;
+        font-size:20px;
+        font-family: serif;
+      }
+      p{
+        font-family: serif;
+        font-size:25px;
+        color: #221647;
+      }
+      a:hover{
+        border:1px solid black;  
+       }
+       h1{
+        text-align: center;   
+        font-size: 40px;
+        color: #221647;
+        font-family: serif;
+    }
+    .myDiv{
+      height: 300px;
+      width: 20%;
+      border: 3px outset #221647 ;
+      text-align: center;
+      position: relative;
+      top: 50px;
+      left: 600px;
+  }
+    </style>
 </head>
 <body>
-<form>
-  <h1 >Hi  you are logged in</h1>
+  <h1>Zdravo, uspešno ste se prijavili!</h1>
+
+  <div class="myDiv">
+  <p>Opcije</p>
+  <br>
+  <a href="#">Pregled stanja</a><br/>
+  <br>
+  <a href="{{url_for('auth.update_profile')}}">Uredi profil</a>
+  <br>
+  <br>
   <a href="{{url_for('auth.logout')}}">Logout</a>
-  <a href="{{url_for('auth.update_profile')}}">Edit profile</a>
-</form>
+  </div>
 </body>
 </html>
