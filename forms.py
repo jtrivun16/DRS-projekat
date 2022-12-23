@@ -55,27 +55,27 @@ class RegisterForm(FlaskForm):
 
 
 class UpdateAccountForm(FlaskForm):
-    first_name = StringField('FirstName', validators=[DataRequired(), Length(min=2, max=20)])
+    first_name = StringField('Ime', validators=[DataRequired(), Length(min=2, max=20)])
 
-    last_name = StringField('LastName', validators=[DataRequired(), Length(min=2, max=20)])
+    last_name = StringField('Prezime', validators=[DataRequired(), Length(min=2, max=20)])
 
-    address = StringField('Address', validators=[DataRequired(), Length(min=2, max=35)])
+    address = StringField('Addresa', validators=[DataRequired(), Length(min=2, max=35)])
 
-    town = StringField('Town', validators=[DataRequired(), Length(min=2, max=20)])
+    town = StringField('Grad', validators=[DataRequired(), Length(min=2, max=20)])
 
-    country = StringField('Country', validators=[DataRequired(), Length(min=2, max=20)])
+    country = StringField('Drzava', validators=[DataRequired(), Length(min=2, max=20)])
 
     phone_number = IntegerField(validators=[DataRequired()])
 
     password = PasswordField(validators=[DataRequired(), Length( min=5, max=255)])
 
-    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
+    username = StringField('Korisniko ime', validators=[DataRequired(), Length(min=2, max=20)])
 
-    email = StringField('Email',validators=[DataRequired(), Email()])
+    email = StringField('E-mail', validators=[DataRequired(), Email()])
 
     # picture = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
 
-    submit = SubmitField('Update')
+    submit = SubmitField('Izmeni')
 
     def validate_username(self, username):
         if username.data != current_user.username:
