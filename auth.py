@@ -62,6 +62,10 @@ def logout():
     logout_user()
     return redirect(url_for('auth.login'))
 
+@auth.route('/status')
+@login_required
+def status():
+    return render_template('statusCheck.html')
 
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
