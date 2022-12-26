@@ -1,4 +1,4 @@
-class PaymentCard:
+class OnlinePaymentCard:
     def __init__(self, number, name, expiry_date, security_code, status):
         self.number = number
         self.user_name = name

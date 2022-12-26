@@ -14,6 +14,8 @@ class User(db.Model, User.User):  # if some error occur check User Mixin class
     country = db.Column(db.String(20), nullable=False)
     phone_number = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(20), unique=True, nullable=False)
+    cardNumber = db.Column(db.Integer, nullable=False, unique=True)
+    verified = db.Column(db.Boolean, nullable= False)
     password = db.Column(db.String(255), nullable=False)
     payments_cards = db.relationship('PaymentCard', backref='owner', lazy=True)
     # backref arg - that allows automatic generation of a new relationship
@@ -26,6 +28,14 @@ class User(db.Model, User.User):  # if some error occur check User Mixin class
         if existing_user_username:
             raise ValidationError(
                 "That username already exists. Please choose a different one"
+            )
+            
+    @staticmethod
+    def validate_cardNumber(cardNumber):
+        existing_user_cardNumber = User.query.filter_by(cardNumber=cardNumber.data).first()
+        if existing_user_cardNumber:
+            raise ValidationError(
+                "That card number already exists."
             )
 
 

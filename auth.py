@@ -15,7 +15,7 @@ def save_user_data(form): # used to save user data into db
 
     new_user = User(username=form.username.data, first_name=form.first_name.data, last_name=form.last_name.data,
                     address=form.address.data, town=form.town.data, country=form.country.data,
-                    phone_number=form.phone_number.data, email=form.email.data, password=hashed_password)
+                    phone_number=form.phone_number.data, cardNumber=form.cardNumber.data, email=form.email.data, verified=False, password=hashed_password)
     db.session.add(new_user)
     db.session.commit()
 
@@ -31,6 +31,7 @@ def update_user_data(form):  # used to save user data into db
     user.town = form.town.data
     user.country = form.country.data
     user.phone_number = form.phone_number.data
+    user.cardNumber = form.cardNumber.data
     user.email = form.email.data
     user.password = hashed_password
     db.session.commit()
@@ -97,6 +98,7 @@ def update_profile():
         form.country.data = current_user.country
         form.phone_number.data = current_user.phone_number
         form.email.data = current_user.email
+        form.cardNumber.data = current_user.cardNumber
         form.password.data = current_user.password  # TODO
 
     return render_template('editProfile.html', form=form)
