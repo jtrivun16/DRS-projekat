@@ -108,3 +108,12 @@ def update_profile():
 def back():
     return redirect(url_for('views.dashboard'))
 
+@auth.route('/pay_in')
+@login_required
+def pay_in():
+    return render_template('payIn.html')
+
+@auth.route('/history')
+@login_required
+def history():
+    return render_template('history.html')
