@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Provera statusa</title>
+    <style>
+        * {
+            box-sizing: border-box;
+          }
+          
+          #myInput {
+            background-image: url('/css/searchicon.png');
+            background-position: 10px 10px;
+            background-repeat: no-repeat;
+            width: 100%;
+            font-size: 16px;
+            padding: 12px 20px 12px 40px;
+            border: 1px solid #ddd;
+            margin-bottom: 12px;
+          }
+          
+          #myTable {
+            border-collapse: collapse;
+            width: 100%;
+            border: 1px solid #ddd;
+            font-size: 18px;
+          }
+          
+          #myTable th, #myTable td {
+            text-align: left;
+            padding: 12px;
+          }
+          
+          #myTable tr {
+            border-bottom: 1px solid #ddd;
+          }
+          
+          #myTable tr.header, #myTable tr:hover {
+            background-color: #f1f1f1;
+          }
+
+      body, html
+      {
+        height: 100%;
+        margin: 0;
+        background: center/cover url("../static/bank.jpg") fixed no-repeat;
+
+      }
+      a:link, a:visited {
+        color: #221647;
+        text-decoration: underline;
+        cursor: pointer;
+        font-size:20px;
+        font-family: serif;
+      }
+      p{
+        font-family: serif;
+        font-size:25px;
+        color: #221647;
+      }
+      a:hover{
+        border:1px solid black;  
+       }
+       h1{
+        text-align: center;   
+        font-size: 40px;
+        color: #221647;
+        font-family: serif;
+    }
+    .myDiv{
+      height: 400px;
+      width: 60%;
+      border: 3px outset #221647 ;
+      text-align: center;
+      position: relative;
+      top: 30px;
+      left: 300px;
+      
+  }
+  table, th, td {
+    border:1px solid black;
+    
+
+  }
+  .button {
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+  }
+  
+  .button1 {background-color: #008CBA;} /* Blue */
+    </style>
+</head>
+<body>
+  <h1>Pregled istorije transakcija</h1>
+
+  <div class="myDiv">
+
+    <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
+
+    <table id="myTable" class="searchable sortable">
+        <thead>
+          <tr class="header">
+            <th>Račun korisnika</th>
+            <th>Datum transakcije</th>
+            <th>Priliv/odliv</th>
+            <th>Iznos</th>
+            <th>Svrha plaćanja</th>
+            <th>Stanje</th>
+
+         </tr>
+        </thead>
+        <tbody>
+          <tr>
+           <td></td>
+           <td></td>
+           <td></td>
+           <td></td>
+           <td></td>
+           <td></td>
+
+          </tr>
+         </tbody>
+    </table>
+
+  <a href="{{url_for('auth.back')}}">Vrati se na prethodnu stranicu <a/>
+  </div>
+
+  <script>
+    function myFunction() {
+      var input, filter, table, tr, td, i, txtValue;
+      input = document.getElementById("myInput");
+      filter = input.value.toUpperCase();
+      table = document.getElementById("myTable");
+      tr = table.getElementsByTagName("tr");
+      for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[0];
+        if (td) {
+          txtValue = td.textContent || td.innerText;
+          if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+          } else {
+            tr[i].style.display = "none";
+          }
+        }       
+      }
+    }
+    </script>
+
+</body>
+</html>
