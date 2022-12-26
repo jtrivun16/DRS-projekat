@@ -38,6 +38,8 @@ class RegisterForm(FlaskForm):
 
     email = EmailField(validators=[InputRequired()], render_kw={'placeholder': "example@gmail.com"})
 
+    cardNumber = IntegerField(validators=[InputRequired()], render_kw={"placeholder": "Card number"})
+
     password = PasswordField(validators=[InputRequired(), Length(
         min=5, max=255)], render_kw={"placeholder": "Password"})
 
@@ -47,7 +49,10 @@ class RegisterForm(FlaskForm):
         user = User.query.filter_by(username=username.data).first()
         if user:
             raise ValidationError('That username is taken. Please choose a different one.')
-
+    def validate_cardNumber(self, cardNumber):
+        user = User.query.filter_by(cardNumber=cardNumber.data).first()
+        if user:
+            raise ValidationError('That cardNumber is taken.')
     def validate_email(self, email):
         user = User.query.filter_by(email=email.data).first()
         if user:
@@ -71,6 +76,8 @@ class UpdateAccountForm(FlaskForm):
 
     username = StringField('Korisniko ime', validators=[DataRequired(), Length(min=2, max=20)])
 
+    cardNumber = IntegerField(validators=[DataRequired()])
+
     email = StringField('E-mail', validators=[DataRequired(), Email()])
 
     # picture = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
@@ -82,7 +89,10 @@ class UpdateAccountForm(FlaskForm):
             user = User.query.filter_by(username=username.data).first()
             if user:
                 raise ValidationError('That username is taken. Please choose a different one.')
-
+    def validate_cardNumber(self, cardNumber):
+        user = User.query.filter_by(cardNumber=cardNumber.data).first()
+        if user:
+            raise ValidationError('That cardNumber is taken.')
     def validate_email(self, email):
         if email.data != current_user.email:
             user = User.query.filter_by(email=email.data).first()
