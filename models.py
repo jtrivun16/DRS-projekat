@@ -53,7 +53,23 @@ class PaymentCard(db.Model, PaymentCard.PaymentCard):
     expiry_data = db.Column(db.String(5), nullable=False)
     security_code = db.Column(db.Integer, unique=True, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # using lower case because we are referencing table
+    balance = db.Column(db.Integer, nullable=False)
     # foreign key - specify that we have relationship to the user model
 
     # def __repr__(self):
     # return f"Payment card('{self.user_name}' {self.expiry_data})}"
+
+    @staticmethod
+    def payoff(amount, card_num):
+        payment_card = PaymentCard.query.filter_by(card_number=card_num).first()
+        if payment_card.balance >= amount:
+            payment_card.balance -= amount
+            return True
+
+        # TODO else throw error
+
+    @property
+    def pay_in(self, amount,card_num):
+        payment_card = PaymentCard.query.filter_by(card_number=card_num.data)
+        payment_card.balance += amount
+

@@ -5,7 +5,7 @@ from wtforms import StringField, PasswordField, SubmitField, IntegerField, Email
 from wtforms.validators import InputRequired, Length, ValidationError
 from __init__ import db, bcrypt, login_manager
 from forms import RegisterForm, LoginForm, UpdateAccountForm, ValidateAccount
-from models import User
+from models import User, PaymentCard
 
 auth = Blueprint('auth', __name__)
 
@@ -39,7 +39,7 @@ def update_user_data(form):  # used to save user data into db
     db.session.commit()
 
 def update_user_data(user):  # used to save user data into db
-    hashed_password = bcrypt.generate_password_hash(user.password)
+    #hashed_password = bcrypt.generate_password_hash(user.password)
 
     loaded_user = User.query.filter_by(username=user.username).first()
     loaded_user.username = user.username
@@ -51,7 +51,7 @@ def update_user_data(user):  # used to save user data into db
     loaded_user.phone_number = user.phone_number
     loaded_user.cardNumber = user.cardNumber
     loaded_user.email = user.email
-    loaded_user.password = hashed_password
+    loaded_user.password = user.password
     db.session.commit()
     print(user.verified)
 
@@ -86,7 +86,8 @@ def logout():
 @auth.route('/status')
 @login_required
 def status():
-    user = current_user
+    user = User.query.get(current_user.id)
+
     if user.is_verified:
         return render_template('statusCheck.html', visibility="hidden")
     else:
@@ -101,13 +102,16 @@ def account_verification():
         return render_template('accountVerification.html', form=form)
     else:
         card_number = form.card_number
-        print(card_number)
+        print(card_number.data)
         # TODO check card number if ok than and message
+        #PaymentCard.pay_in(1,card_number.data)
         if current_user.validate_cardNumber(card_number):
-            current_user.verified = True;
-            update_user_data(current_user)
-            db.session.commit()
-            return render_template('statusCheck.html')
+            if PaymentCard.payoff(1, card_number.data):  # payoff one dolar
+                current_user.verified = True;
+                update_user_data(current_user)
+                db.session.commit()
+                return redirect(url_for('auth.status'))
+            #else  no money error
         #else return render_template('accountVerification.html')
 
 
