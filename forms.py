@@ -100,4 +100,6 @@ class UpdateAccountForm(FlaskForm):
                 raise ValidationError('That email is taken. Please choose a different one.')
 
 
-
+class ValidateAccount(FlaskForm):
+    card_number = IntegerField(validators=[DataRequired()])
+    submit = SubmitField("Verifikuj nalog")

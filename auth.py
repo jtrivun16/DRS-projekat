@@ -4,7 +4,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, IntegerField, EmailField, BooleanField
 from wtforms.validators import InputRequired, Length, ValidationError
 from __init__ import db, bcrypt, login_manager
-from forms import RegisterForm, LoginForm, UpdateAccountForm
+from forms import RegisterForm, LoginForm, UpdateAccountForm, ValidateAccount
 from models import User
 
 auth = Blueprint('auth', __name__)
@@ -15,9 +15,11 @@ def save_user_data(form): # used to save user data into db
 
     new_user = User(username=form.username.data, first_name=form.first_name.data, last_name=form.last_name.data,
                     address=form.address.data, town=form.town.data, country=form.country.data,
-                    phone_number=form.phone_number.data, cardNumber=form.cardNumber.data, email=form.email.data, verified=False, password=hashed_password)
+                    phone_number=form.phone_number.data, cardNumber=form.cardNumber.data, email=form.email.data,
+                    verified=False, password=hashed_password)
     db.session.add(new_user)
     db.session.commit()
+
 
 
 def update_user_data(form):  # used to save user data into db
@@ -35,6 +37,24 @@ def update_user_data(form):  # used to save user data into db
     user.email = form.email.data
     user.password = hashed_password
     db.session.commit()
+
+def update_user_data(user):  # used to save user data into db
+    hashed_password = bcrypt.generate_password_hash(user.password)
+
+    loaded_user = User.query.filter_by(username=user.username).first()
+    loaded_user.username = user.username
+    loaded_user.first_name = user.first_name
+    loaded_user.last_name = user.last_name
+    loaded_user.address = user.address
+    loaded_user.town = user.town
+    loaded_user.country = user.country
+    loaded_user.phone_number = user.phone_number
+    loaded_user.cardNumber = user.cardNumber
+    loaded_user.email = user.email
+    loaded_user.password = hashed_password
+    db.session.commit()
+    print(user.verified)
+
 
 
 @login_manager.user_loader  # reload user obj from the user id stored in the session
@@ -66,7 +86,31 @@ def logout():
 @auth.route('/status')
 @login_required
 def status():
-    return render_template('statusCheck.html')
+    user = current_user
+    if user.is_verified:
+        return render_template('statusCheck.html', visibility="hidden")
+    else:
+        return render_template('statusCheck.html', visibility="visible")
+
+
+@auth.route('/account_verification', methods=['GET', 'POST'])
+@login_required
+def account_verification():
+    form = ValidateAccount()
+    if request.method == 'GET':
+        return render_template('accountVerification.html', form=form)
+    else:
+        card_number = form.card_number
+        print(card_number)
+        # TODO check card number if ok than and message
+        if current_user.validate_cardNumber(card_number):
+            current_user.verified = True;
+            update_user_data(current_user)
+            db.session.commit()
+            return render_template('statusCheck.html')
+        #else return render_template('accountVerification.html')
+
+
 
 @auth.route('/register', methods=['GET', 'POST'])
 def register():

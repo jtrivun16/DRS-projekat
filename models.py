@@ -22,6 +22,10 @@ class User(db.Model, User.User):  # if some error occur check User Mixin class
     # that will be automatically added to ORM mapping for the related class
     # lazy arg - sqlalchemy will load data in one go
 
+    @property
+    def is_verified(self):
+        return self.verified
+
     @staticmethod
     def validate_username(username):
         existing_user_username = User.query.filter_by(username=username.data).first()
@@ -33,10 +37,13 @@ class User(db.Model, User.User):  # if some error occur check User Mixin class
     @staticmethod
     def validate_cardNumber(cardNumber):
         existing_user_cardNumber = User.query.filter_by(cardNumber=cardNumber.data).first()
-        if existing_user_cardNumber:
+        if not existing_user_cardNumber:
             raise ValidationError(
-                "That card number already exists."
+                "Card is not valid."
             )
+            return False
+        return True
+
 
 
 class PaymentCard(db.Model, PaymentCard.PaymentCard):
