@@ -12,19 +12,24 @@ class User(db.Model, User.User):  # if some error occur check User Mixin class
     address = db.Column(db.String(35), nullable=False)
     town = db.Column(db.String(20), nullable=False)
     country = db.Column(db.String(20), nullable=False)
-    phone_number = db.Column(db.String(20), nullable=False)
+    phone_number = db.Column(db.Integer, nullable=False)
     email = db.Column(db.String(20), unique=True, nullable=False)
-    cardNumber = db.Column(db.Integer, nullable=False, unique=True)
-    verified = db.Column(db.Boolean, nullable= False)
+    cardNumber = db.Column(db.String(10))
+    verified = db.Column(db.Boolean, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     payments_cards = db.relationship('PaymentCard', backref='owner', lazy=True)
     # backref arg - that allows automatic generation of a new relationship
     # that will be automatically added to ORM mapping for the related class
     # lazy arg - sqlalchemy will load data in one go
 
+
     @property
     def is_verified(self):
         return self.verified
+
+    def get_id(self):
+        return self.id
+
 
     @staticmethod
     def validate_username(username):

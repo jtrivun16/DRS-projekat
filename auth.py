@@ -1,3 +1,7 @@
+import datetime
+import string
+import random
+
 from flask import render_template, url_for, redirect, Blueprint, request
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_wtf import FlaskForm
@@ -6,19 +10,26 @@ from wtforms.validators import InputRequired, Length, ValidationError
 from __init__ import db, bcrypt, login_manager
 from forms import RegisterForm, LoginForm, UpdateAccountForm, ValidateAccount
 from models import User, PaymentCard
+import uuid
 
 auth = Blueprint('auth', __name__)
 
 
-def save_user_data(form): # used to save user data into db
+def save_user_data(form): # used to save user data into db used only for creating new users
     hashed_password = bcrypt.generate_password_hash(form.password.data)
 
     new_user = User(username=form.username.data, first_name=form.first_name.data, last_name=form.last_name.data,
                     address=form.address.data, town=form.town.data, country=form.country.data,
-                    phone_number=form.phone_number.data, cardNumber=form.cardNumber.data, email=form.email.data,
+                    phone_number=form.phone_number.data, cardNumber=1, email=form.email.data,
                     verified=False, password=hashed_password)
+
     db.session.add(new_user)
     db.session.commit()
+
+    return new_user.username
+
+
+
 
 
 
@@ -33,12 +44,11 @@ def update_user_data(form):  # used to save user data into db
     user.town = form.town.data
     user.country = form.country.data
     user.phone_number = form.phone_number.data
-    user.cardNumber = form.cardNumber.data
     user.email = form.email.data
     user.password = hashed_password
     db.session.commit()
 
-def update_user_data(user):  # used to save user data into db
+def update_user_data_verification(user):  # used to save user data into db
     #hashed_password = bcrypt.generate_password_hash(user.password)
 
     loaded_user = User.query.filter_by(username=user.username).first()
@@ -49,7 +59,6 @@ def update_user_data(user):  # used to save user data into db
     loaded_user.town = user.town
     loaded_user.country = user.country
     loaded_user.phone_number = user.phone_number
-    loaded_user.cardNumber = user.cardNumber
     loaded_user.email = user.email
     loaded_user.password = user.password
     db.session.commit()
@@ -71,7 +80,7 @@ def login(login_error=None):
         user = User.query.filter_by(username=form.username.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             load_user(user.id)
-            login_user(user, remember=form.remember.data)
+            login_user(user)
             return redirect(url_for('views.dashboard'))
         else:
             raise ValidationError('wrong username or password')
@@ -108,11 +117,12 @@ def account_verification():
         if current_user.validate_cardNumber(card_number):
             if PaymentCard.payoff(1, card_number.data):  # payoff one dolar
                 current_user.verified = True;
-                update_user_data(current_user)
+                update_user_data_verification(current_user)
                 db.session.commit()
                 return redirect(url_for('auth.status'))
             #else  no money error
         #else return render_template('accountVerification.html')
+
 
 
 
@@ -121,12 +131,49 @@ def register():
     form = RegisterForm()
 
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
-        save_user_data(form)
+        username = save_user_data(form)
+        user = User.query.filter_by(username=username).first()
+        user.cardNumber = create_payment_card(user.id, user.username)
+        db.session.commit()
         return redirect(url_for('auth.login'))
+
+
 
     print(form.errors)
     return render_template('register.html', form=form)
+
+
+def create_payment_card(user_id, username):
+    payment_card = PaymentCard()
+    _accountNum = ''.join(random.choices(string.digits, k=18))
+    while account_num_exists(_accountNum):
+        _accountNum = ''.join(random.choices(string.digits, k=18))
+    _security_code = ''.join(random.choices(string.digits, k=3))
+    _expiry_date = datetime.datetime.today() + datetime.timedelta(days=730)
+
+    payment_card.card_number = _accountNum
+    payment_card.security_code = _security_code
+    payment_card.balance = 0
+    payment_card.user_id = user_id
+    payment_card.user_name = username
+    payment_card.id = id(payment_card)  # unique integer number for every unique value it is used with.
+    year = str(_expiry_date.month) + '/' + str(_expiry_date.year)[2:]
+    payment_card.expiry_data = year
+
+    db.session.add(payment_card)
+    db.session.commit()
+    return _accountNum
+
+
+#  Check if user with same account number already exists
+#  We do this because account number is randomly generated and must be unique
+def account_num_exists(accNum):
+    account = PaymentCard.query.filter_by(card_number=accNum).first()
+    if account:
+        return True
+    else:
+        return False
+
 
 
 @auth.route('/editProfile', methods=['GET', 'POST'])
@@ -138,6 +185,7 @@ def update_profile():
         update_user_data(form)
         return redirect(url_for('views.dashboard'))
     elif request.method == 'GET':
+        print(current_user)
         form.username.data = current_user.username
         form.first_name.data = current_user.first_name
         form.last_name.data = current_user.last_name
@@ -146,8 +194,7 @@ def update_profile():
         form.country.data = current_user.country
         form.phone_number.data = current_user.phone_number
         form.email.data = current_user.email
-        form.cardNumber.data = current_user.cardNumber
-        form.password.data = current_user.password  # TODO
+        form.password.data = current_user.password
 
     return render_template('editProfile.html', form=form)
 
