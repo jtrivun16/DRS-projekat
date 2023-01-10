@@ -1,6 +1,6 @@
 class User:
-    def __init__(self,id:object, username: object, first_name: object, last_name: object, address: object,
-                 town: object, country: object, phone_number: object, email: object, cardNumber: object,
+    def __init__(self, id:object, username: object, first_name: object, last_name: object, address: object,
+                 town: object, country: object, phone_number: object, email: object, cardNumber: object, onlineCardNumber:object,
                  verified: object, password: object) -> object:
         self.id = id
         self.username = username
@@ -12,6 +12,7 @@ class User:
         self.phone_number = phone_number
         self.email = email
         self.cardNumber = cardNumber
+        self.onlineCardNumber = onlineCardNumber
         self.verified = verified
         self.password = password
 

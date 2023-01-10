@@ -1,6 +1,6 @@
 from __init__ import db
 from wtforms.validators import ValidationError
-from  Models import User, PaymentCard
+from Models import User, PaymentCard, OnlineAccount
 
 
 # db models
@@ -14,7 +14,8 @@ class User(db.Model, User.User):  # if some error occur check User Mixin class
     country = db.Column(db.String(20), nullable=False)
     phone_number = db.Column(db.Integer, nullable=False)
     email = db.Column(db.String(20), unique=True, nullable=False)
-    cardNumber = db.Column(db.String(10))
+    cardNumber = db.Column(db.String(18))
+    onlineCardNumber = db.Column(db.String(18))
     verified = db.Column(db.Boolean, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     payments_cards = db.relationship('PaymentCard', backref='owner', lazy=True)
@@ -30,7 +31,6 @@ class User(db.Model, User.User):  # if some error occur check User Mixin class
     def get_id(self):
         return self.id
 
-
     @staticmethod
     def validate_username(username):
         existing_user_username = User.query.filter_by(username=username.data).first()
@@ -38,17 +38,16 @@ class User(db.Model, User.User):  # if some error occur check User Mixin class
             raise ValidationError(
                 "That username already exists. Please choose a different one"
             )
-            
+
     @staticmethod
-    def validate_cardNumber(cardNumber):
-        existing_user_cardNumber = User.query.filter_by(cardNumber=cardNumber.data).first()
-        if not existing_user_cardNumber:
+    def validate_card_number(card_number):
+        existing_user_card_number = User.query.filter_by(cardNumber=card_number.data).first()
+        if not existing_user_card_number:
             raise ValidationError(
                 "Card is not valid."
             )
             return False
         return True
-
 
 
 class PaymentCard(db.Model, PaymentCard.PaymentCard):
@@ -64,17 +63,46 @@ class PaymentCard(db.Model, PaymentCard.PaymentCard):
     # def __repr__(self):
     # return f"Payment card('{self.user_name}' {self.expiry_data})}"
 
-    @staticmethod
-    def payoff(amount, card_num):
-        payment_card = PaymentCard.query.filter_by(card_number=card_num).first()
-        if payment_card.balance >= amount:
-            payment_card.balance -= amount
-            return True
+    # @staticmethod
+    # def payoff(amount, card_num):
+    #     payment_card = PaymentCard.query.filter_by(card_number=card_num).first()
+    #     if payment_card.balance >= amount:
+    #         payment_card.balance -= amount
+    #         return True
+    #
+    #     # TODO else throw error
 
-        # TODO else throw error
+    # @property
+    # def add_funds(self, amount, card_num):
+    #     payment_card = PaymentCard.query.filter_by(card_number=card_num.data)
+    #     payment_card.balance += amount
+    #
 
-    @property
-    def pay_in(self, amount,card_num):
-        payment_card = PaymentCard.query.filter_by(card_number=card_num.data)
-        payment_card.balance += amount
+
+class OnlineAccount(db.Model, OnlineAccount.OnlineAccount):
+    id = db.Column(db.Integer, primary_key=True)
+    card_number = db.Column(db.Integer, unique=True, nullable=False)
+    user_name = db.Column(db.String(20), nullable=False)
+    user_email = db.Column(db.String(20), unique=True, nullable=False)
+    balance = db.Column(db.Integer, nullable=False)
+    # foreign key - specify that we have relationship to the user model
+
+    # def __repr__(self):
+    # return f"Payment card('{self.user_name}' {self.expiry_data})}"
+
+    # @staticmethod
+    # def payoff(amount, card_num):
+    #     payment_card = PaymentCard.query.filter_by(card_number=card_num).first()
+    #     if payment_card.balance >= amount:
+    #         payment_card.balance -= amount
+    #         return True
+    #
+    #     # TODO else throw error
+
+    # @property
+    # def add_funds(self, amount, card_num):
+    #     payment_card = PaymentCard.query.filter_by(card_number=card_num.data)
+    #     payment_card.balance += amount
+    #
+
 

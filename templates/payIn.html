@@ -72,13 +72,13 @@
       <th>Trenutni iznos na Vašoj platnoj kartici: </th>
     </tr>
     <tr>
-      <td>0</td>
+      <td>{{payment_card_balance}}</td>
     </tr>
     <tr>
-        <th>Trenutni iznos na Vašoj online kartici: </th>
+        <th>Trenutni iznos na Vašem online racunu: </th>
       </tr>
       <tr>
-        <td>1</td>
+        <td>{{acc_balance}}</td>
       </tr>
   </table>
   <br>
@@ -92,7 +92,7 @@
   <br>
   
   
-  <a href="{{url_for('auth.back')}}">Vrati se na prethodnu stranicu <a/>
+  <a href="{{url_for('transactions.back')}}">Vrati se na prethodnu stranicu </a>
   </div>
 </body>
 </html>
