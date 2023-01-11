@@ -1,7 +1,7 @@
 from flask_login import current_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, EmailField, IntegerField
-from wtforms.validators import InputRequired, Length, ValidationError, DataRequired, Email
+from wtforms.validators import InputRequired, Length, ValidationError, DataRequired, Email, NumberRange
 from database_models import User
 
 
@@ -92,3 +92,9 @@ class UpdateAccountForm(FlaskForm):
 class ValidateAccount(FlaskForm):
     card_number = IntegerField(validators=[DataRequired()])
     submit = SubmitField("Verifikuj nalog")
+
+
+class SendFundsToMyAccount(FlaskForm):
+    amount = IntegerField(validators=[DataRequired(), NumberRange(min=1)])
+    submit = SubmitField("Prenesi")
+    #TODO validation errors

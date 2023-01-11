@@ -83,9 +83,12 @@
   </table>
   <br>
   <p>Koliko para želite da prebacite na online karticu?</p>
-  <input type = "number"/>
+    <form method="POST">
+      {{form.amount}}
+      {{form.submit}}
+    </form>
   <br>
-  <button class="button button1">Prihvati</button>
+<!--  <button class="button button1">Prihvati</button>-->
   <br>
   <br>
   <br>

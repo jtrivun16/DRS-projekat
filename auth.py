@@ -11,7 +11,7 @@ from __init__ import db, bcrypt, login_manager
 from forms import RegisterForm, LoginForm, UpdateAccountForm, ValidateAccount
 from database_models import User, PaymentCard, OnlineAccount
 from database_functions import get_user, get_payment_card, update_user_data, update_user_data_verification, get_online_account
-from transaction import payoff
+from transaction import payoff_from_payment_card
 import uuid
 
 auth = Blueprint('auth', __name__)
@@ -38,16 +38,16 @@ auth = Blueprint('auth', __name__)
 #
 #     loaded_user = get_user(user.username)
 #     loaded_user.username = user.username
-#     loaded_user.first_name = user.first_name
-#     loaded_user.last_name = user.last_name
-#     loaded_user.address = user.address
-#     loaded_user.town = user.town
-#     loaded_user.country = user.country
-#     loaded_user.phone_number = user.phone_number
-#     loaded_user.email = user.email
-#     loaded_user.password = user.password
-#     db.session.commit()
-#     print(user.verified)
+#     loaded_user.first_name user.last_name
+# #     loaded_user.address = user.address
+# #     loaded_user.town = user.town
+# #     loaded_user.country = user.country
+# #     loaded_user.phone_number = user.phone_number
+# #     loaded_user.email = user.email
+# #     loaded_user.password = user.password
+# #     db.session.commit()
+# #     print(user.verified)= user.first_name
+#     loaded_user.last_name =
 
 
 @login_manager.user_loader  # reload user obj from the user id stored in the session
@@ -80,7 +80,6 @@ def logout():
 @auth.route('/status')
 @login_required
 def status():  # this function check if user account is verified
-    #user = User.query.get(current_user.id)
     user = get_user(current_user.username)
     online_account = get_online_account(user.onlineCardNumber)
     if user.is_verified:
@@ -101,7 +100,7 @@ def account_verification():
         # TODO check card number if ok than and message
         # PaymentCard.pay_in(1,card_number.data)
         if current_user.validate_card_number(card_number):
-            if payoff(1, card_number.data):  # payoff one dollar
+            if payoff_from_payment_card(1, card_number.data):  # payoff one dollar
                 current_user.verified = True
                 update_user_data_verification(current_user)
                 db.session.commit()
@@ -153,7 +152,7 @@ def create_payment_card(user_id, username):
     payment_card.balance = 0
     payment_card.user_id = user_id
     payment_card.user_name = username
-    payment_card.balance = 10  # TODO da li na pocetku dodati malu sumu?
+    payment_card.balance = 100  # TODO da li na pocetku dodati malu sumu?
     payment_card.id = id(payment_card)  # unique integer number for every unique value it is used with.
     year = str(_expiry_date.month) + '/' + str(_expiry_date.year)[2:]
     payment_card.expiry_data = year
@@ -191,6 +190,7 @@ def account_num_exists(acc_num):
         return False
 
 
+# edit profile
 @auth.route('/editProfile', methods=['GET', 'POST'])
 @login_required
 def update_profile():
