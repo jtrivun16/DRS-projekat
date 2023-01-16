@@ -72,11 +72,14 @@
       <th>Trenutni iznos na vasem racunu je: </th>
     </tr>
     <tr>
-      <td>0</td>
+      <td>{{balance}}</td>
     </tr>
   </table>
   <br>
-  <button class="button button1">Verifikuj nalog</button>
+      <a href="{{url_for('auth.account_verification')}}" style="visibility:{{visibility}}">
+        <button type="submit" class="button button1">Verifikuj nalog</button>
+      </a>
+
   <br>
   <br>
   <br>
@@ -86,7 +89,7 @@
   <br>
   <br>
   
-  <a href="{{url_for('auth.back')}}">Vrati se na prethodnu stranicu <a/>
+  <a href="{{url_for('auth.back')}}">Vrati se na prethodnu stranicu </a>
   </div>
 </body>
 </html>

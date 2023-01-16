@@ -1313,159 +1313,234 @@
     <argument id="481" parent="165">
       <Position>1</Position>
     </argument>
-    <table id="482" parent="166" name="payment_card"/>
-    <table id="483" parent="166" name="sqlite_master">
+    <table id="482" parent="166" name="online_account"/>
+    <table id="483" parent="166" name="payment_card"/>
+    <table id="484" parent="166" name="sqlite_master">
       <System>1</System>
     </table>
-    <table id="484" parent="166" name="user"/>
-    <column id="485" parent="482" name="id">
+    <table id="485" parent="166" name="user"/>
+    <column id="486" parent="482" name="id">
       <DasType>INTEGER|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="486" parent="482" name="card_number">
+    <column id="487" parent="482" name="card_number">
       <DasType>INTEGER|0s</DasType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <column id="487" parent="482" name="user_name">
+    <column id="488" parent="482" name="user_name">
       <DasType>VARCHAR(20)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
-    <column id="488" parent="482" name="expiry_data">
+    <column id="489" parent="482" name="user_email">
+      <DasType>VARCHAR(20)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+    </column>
+    <column id="490" parent="482" name="balance">
+      <DasType>INTEGER|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+    </column>
+    <index id="491" parent="482" name="sqlite_autoindex_online_account_1">
+      <ColNames>card_number</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <Unique>1</Unique>
+    </index>
+    <index id="492" parent="482" name="sqlite_autoindex_online_account_2">
+      <ColNames>user_email</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <Unique>1</Unique>
+    </index>
+    <key id="493" parent="482">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <key id="494" parent="482">
+      <ColNames>card_number</ColNames>
+      <UnderlyingIndexName>sqlite_autoindex_online_account_1</UnderlyingIndexName>
+    </key>
+    <key id="495" parent="482">
+      <ColNames>user_email</ColNames>
+      <UnderlyingIndexName>sqlite_autoindex_online_account_2</UnderlyingIndexName>
+    </key>
+    <column id="496" parent="483" name="id">
+      <DasType>INTEGER|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="497" parent="483" name="card_number">
+      <DasType>INTEGER|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <column id="498" parent="483" name="user_name">
+      <DasType>VARCHAR(20)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+    </column>
+    <column id="499" parent="483" name="expiry_data">
       <DasType>VARCHAR(5)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>4</Position>
     </column>
-    <column id="489" parent="482" name="security_code">
+    <column id="500" parent="483" name="security_code">
       <DasType>INTEGER|0s</DasType>
       <NotNull>1</NotNull>
       <Position>5</Position>
     </column>
-    <column id="490" parent="482" name="user_id">
+    <column id="501" parent="483" name="user_id">
       <DasType>INTEGER|0s</DasType>
       <NotNull>1</NotNull>
       <Position>6</Position>
     </column>
-    <foreign-key id="491" parent="482">
+    <column id="502" parent="483" name="balance">
+      <DasType>integer|0s</DasType>
+      <Position>7</Position>
+    </column>
+    <foreign-key id="503" parent="483">
       <ColNames>user_id</ColNames>
       <RefColNames>id</RefColNames>
       <RefTableName>user</RefTableName>
     </foreign-key>
-    <index id="492" parent="482" name="sqlite_autoindex_payment_card_1">
+    <index id="504" parent="483" name="sqlite_autoindex_payment_card_1">
       <ColNames>card_number</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <Unique>1</Unique>
     </index>
-    <index id="493" parent="482" name="sqlite_autoindex_payment_card_2">
+    <index id="505" parent="483" name="sqlite_autoindex_payment_card_2">
       <ColNames>security_code</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <Unique>1</Unique>
     </index>
-    <key id="494" parent="482">
+    <key id="506" parent="483">
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <key id="495" parent="482">
+    <key id="507" parent="483">
       <ColNames>card_number</ColNames>
       <UnderlyingIndexName>sqlite_autoindex_payment_card_1</UnderlyingIndexName>
     </key>
-    <key id="496" parent="482">
+    <key id="508" parent="483">
       <ColNames>security_code</ColNames>
       <UnderlyingIndexName>sqlite_autoindex_payment_card_2</UnderlyingIndexName>
     </key>
-    <column id="497" parent="483" name="type">
+    <column id="509" parent="484" name="type">
       <DasType>TEXT|0s</DasType>
       <Position>1</Position>
     </column>
-    <column id="498" parent="483" name="name">
+    <column id="510" parent="484" name="name">
       <DasType>TEXT|0s</DasType>
       <Position>2</Position>
     </column>
-    <column id="499" parent="483" name="tbl_name">
+    <column id="511" parent="484" name="tbl_name">
       <DasType>TEXT|0s</DasType>
       <Position>3</Position>
     </column>
-    <column id="500" parent="483" name="rootpage">
+    <column id="512" parent="484" name="rootpage">
       <DasType>INT|0s</DasType>
       <Position>4</Position>
     </column>
-    <column id="501" parent="483" name="sql">
+    <column id="513" parent="484" name="sql">
       <DasType>TEXT|0s</DasType>
       <Position>5</Position>
     </column>
-    <column id="502" parent="484" name="id">
+    <column id="514" parent="485" name="id">
       <DasType>INTEGER|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="503" parent="484" name="username">
+    <column id="515" parent="485" name="username">
       <DasType>VARCHAR(20)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <column id="504" parent="484" name="first_name">
+    <column id="516" parent="485" name="first_name">
       <DasType>VARCHAR(20)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
-    <column id="505" parent="484" name="last_name">
+    <column id="517" parent="485" name="last_name">
       <DasType>VARCHAR(20)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>4</Position>
     </column>
-    <column id="506" parent="484" name="address">
+    <column id="518" parent="485" name="address">
       <DasType>VARCHAR(35)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>5</Position>
     </column>
-    <column id="507" parent="484" name="town">
+    <column id="519" parent="485" name="town">
       <DasType>VARCHAR(20)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>6</Position>
     </column>
-    <column id="508" parent="484" name="country">
+    <column id="520" parent="485" name="country">
       <DasType>VARCHAR(20)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>7</Position>
     </column>
-    <column id="509" parent="484" name="phone_number">
+    <column id="521" parent="485" name="phone_number">
       <DasType>VARCHAR(20)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>8</Position>
     </column>
-    <column id="510" parent="484" name="email">
+    <column id="522" parent="485" name="email">
       <DasType>VARCHAR(20)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>9</Position>
     </column>
-    <column id="511" parent="484" name="password">
-      <DasType>VARCHAR(80)|0s</DasType>
+    <column id="523" parent="485" name="cardNumber">
+      <DasType>INTEGER|0s</DasType>
       <NotNull>1</NotNull>
       <Position>10</Position>
     </column>
-    <index id="512" parent="484" name="sqlite_autoindex_user_1">
+    <column id="524" parent="485" name="verified">
+      <DasType>BOOLEAN|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>11</Position>
+    </column>
+    <column id="525" parent="485" name="password">
+      <DasType>VARCHAR(255)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>12</Position>
+    </column>
+    <column id="526" parent="485" name="onlineCardNumber">
+      <DasType>integer|0s</DasType>
+      <Position>13</Position>
+    </column>
+    <index id="527" parent="485" name="sqlite_autoindex_user_1">
       <ColNames>username</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <Unique>1</Unique>
     </index>
-    <index id="513" parent="484" name="sqlite_autoindex_user_2">
+    <index id="528" parent="485" name="sqlite_autoindex_user_2">
       <ColNames>email</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <Unique>1</Unique>
     </index>
-    <key id="514" parent="484">
+    <index id="529" parent="485" name="sqlite_autoindex_user_3">
+      <ColNames>cardNumber</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <Unique>1</Unique>
+    </index>
+    <key id="530" parent="485">
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <key id="515" parent="484">
+    <key id="531" parent="485">
       <ColNames>username</ColNames>
       <UnderlyingIndexName>sqlite_autoindex_user_1</UnderlyingIndexName>
     </key>
-    <key id="516" parent="484">
+    <key id="532" parent="485">
       <ColNames>email</ColNames>
       <UnderlyingIndexName>sqlite_autoindex_user_2</UnderlyingIndexName>
+    </key>
+    <key id="533" parent="485">
+      <ColNames>cardNumber</ColNames>
+      <UnderlyingIndexName>sqlite_autoindex_user_3</UnderlyingIndexName>
     </key>
   </database-model>
 </dataSource>
