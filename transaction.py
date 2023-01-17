@@ -4,7 +4,7 @@ from Models import Transaction
 from flask import render_template, url_for, redirect, Blueprint, request
 from flask_login import login_required, current_user
 from database_functions import get_user, get_payment_card, get_online_account
-from forms import SendFundsToMyAccount
+from forms import SendFundsToAnotherAccount, SendFundsToMyAccount
 from time import sleep
 from __init__ import db
 
@@ -59,6 +59,16 @@ def send_funds_to_online_account(amount):
 
     if payoff_from_payment_card(amount, user.cardNumber):
         add_funds_to_online_account(amount, user.onlineCardNumber)
+
+@transactions.route('/sendMoney', methods=['GET', 'POST'])
+@login_required
+def sendMoney():
+    form = SendFundsToAnotherAccount()
+    user = get_user(current_user.username)
+    online_account = get_online_account(user.onlineCardNumber)
+    payment_card = get_payment_card(user.cardNumber)
+    return render_template('sendMoney.html',acc_balance=online_account.balance,
+                           payment_card_balance=payment_card.balance, form = form )
 
 
 # ####### not impl yet #########
