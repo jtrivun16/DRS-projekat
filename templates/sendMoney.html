@@ -1,0 +1,108 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Provera statusa</title>
+    <style>
+      body, html
+      {
+        height: 100%;
+        margin: 0;
+        background: center/cover url("../static/bank.jpg") fixed no-repeat;
+
+      }
+      a:link, a:visited {
+        color: #221647;
+        text-decoration: underline;
+        cursor: pointer;
+        font-size:20px;
+        font-family: serif;
+      }
+      p{
+        font-family: serif;
+        font-size:20px;
+        color: #221647;
+      }
+      a:hover{
+        border:1px solid black;  
+       }
+       h1{
+        text-align: center;   
+        font-size: 40px;
+        color: #221647;
+        font-family: serif;
+    }
+    .myDiv{
+      height: 550px;
+      width: 20%;
+      border: 3px outset #221647 ;
+      text-align: center;
+      position: relative;
+      top: 50px;
+      left: 600px;
+      
+  }
+  table, th, td {
+    border:1px solid black;
+    
+
+  }
+  .button {
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+  }
+  
+  .button1 {background-color: #008CBA;} /* Blue */
+    </style>
+</head>
+<body>
+    <h1>Uplata sredstava drugom korisniku</h1>
+    <div class="myDiv">
+        <br>
+      <table width="90%" style="margin: 0 auto; border:1px solid;text-align:center">
+        <tr>
+          <th>Trenutni iznos na Vašoj platnoj kartici: </th>
+        </tr>
+        <tr>
+          <td>{{payment_card_balance}}</td>
+        </tr>
+        <tr>
+            <th>Trenutni iznos na Vašem online racunu: </th>
+          </tr>
+          <tr>
+            <td>{{acc_balance}}</td>
+          </tr>
+      </table>
+      <br>
+      <p>Unesite broj računa korisnika kojem želite uplatiti novac</p>
+      <form method="POST">
+        {{form.cardNumber}}
+      </form>
+      <p>ili email adresu korisnika ukoliko ima registrovan nalog:</p>
+      <form method="POST">
+        {{form.email}}
+      </form>
+      <br>
+      <p>Koliko para želite da prebacite drugom korisniku?</p>
+      <form method="POST">
+        {{form.amount}}
+        {{form.submit}}
+      </form>
+      <br>
+    <!--  <button class="button button1">Prihvati</button>-->
+      <br>
+
+      
+      
+      <a href="{{url_for('transactions.back')}}">Vrati se na prethodnu stranicu </a>
+      </div>
+</body>
+</html>

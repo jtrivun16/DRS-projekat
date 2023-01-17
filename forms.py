@@ -98,3 +98,10 @@ class SendFundsToMyAccount(FlaskForm):
     amount = IntegerField(validators=[DataRequired(), NumberRange(min=1)])
     submit = SubmitField("Prenesi")
     #TODO validation errors
+    
+class SendFundsToAnotherAccount(FlaskForm):
+    cardNumber = IntegerField(validators=[DataRequired()])
+    email = StringField('E-mail', validators=[DataRequired(), Email()])
+    amount = IntegerField(validators=[DataRequired(), NumberRange(min=1)])
+    submit = SubmitField("Posalji")
+    #TODO validation errors
