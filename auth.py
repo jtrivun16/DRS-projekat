@@ -32,7 +32,8 @@ def login(login_error=None):
             login_user(user)
             return redirect(url_for('views.dashboard'))
         else:
-            raise ValidationError('wrong username or password')
+            error_message = 'wrong username or password'
+            return render_template('login.html',error_message =  error_message, form = form)
 
 
 @auth.route('/logout', methods=['GET', 'POST'])
@@ -62,17 +63,20 @@ def account_verification():
     else:
         card_number = form.card_number
         print(card_number.data)
-        # TODO check card number if ok than and message
         # PaymentCard.pay_in(1,card_number.data)
-        if current_user.validate_card_number(card_number):
+        if not current_user.validate_card_number(card_number):
+            error_message = 'Uneli ste neispravan broj kartice. Pokusajte ponovo.'
+            return render_template('accountVerification.html',error_message =  error_message, form = form)
+        else:
             if payoff_from_payment_card(1, card_number.data):  # payoff one dollar
                 current_user.verified = True
                 update_user_data_verification(current_user)
                 db.session.commit()
                 return redirect(url_for('auth.status'))
-            # else  no money error
-        # else return render_template('accountVerification.html')
-
+            else:
+                error_message = 'Nemate dovoljan iznos na vasem racunu. Neuspesna verifikacija.'
+                return render_template('accountVerification.html',error_message =  error_message, form = form)
+        
 
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
@@ -86,8 +90,7 @@ def register():
         user.onlineCardNumber = create_online_account(user.username, user.email)
         db.session.commit()
         return redirect(url_for('auth.login'))
-
-    print(form.errors)
+    #error_message = form.errors
     return render_template('register.html', form=form)
 
 
