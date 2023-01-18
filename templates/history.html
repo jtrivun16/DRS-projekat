@@ -96,36 +96,87 @@
   
   .button1 {background-color: #008CBA;} /* Blue */
     </style>
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>
+
+
+    function Sort()
+    {
+        $(document).ready(function() {
+
+            var sortOrder = 1; // flag to toggle the sorting order
+            function getVal(elm, colIndex) {
+                var td = $(elm).children('td').eq(colIndex).text();
+                if (typeof td !== "undefined") {
+                    var v = td.toUpperCase();
+                    if ($.isNumeric(v)) {
+                        v = parseInt(v, 10);
+                    }
+                    return v;
+                }
+            }
+
+            $(document).on('click', '.sortable', function () {
+                var self = $(this);
+                var colIndex = self.prevAll().length;
+                var o = (sortOrder == 1) ? 'asc' : 'desc'; // you can use for css to show sort direction
+                sortOrder *= -1; // toggle the sorting order
+
+                $('.sortable').removeClass('asc').removeClass('desc');
+                self.addClass(o);
+
+                var tbody = self.closest("table").find("tbody");
+                var tr = tbody.children("tr"); //.get();
+
+                tr.sort(function (a, b) {
+                    var A = getVal(a, colIndex);
+                    var B = getVal(b, colIndex);
+
+                    if (A < B) {
+                        return -1 * sortOrder;
+                    }
+                    if (A > B) {
+                        return 1 * sortOrder;
+                    }
+                    return 0;
+                });
+
+                $.each(tr, function (index, row) {
+                    //console.dir(row)
+                    tbody.append(row);
+                });
+            })
+        })
+    }
+</script>
 </head>
-<body>
+<body onload="Sort()" >
   <h1>Pregled istorije transakcija</h1>
 
   <div class="myDiv">
 
     <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
 
-    <table id="myTable" class="searchable sortable">
+    <table class="fdt-datatable" id="resulttable" name="resulttable">
         <thead>
           <tr class="header">
-            <th>Račun korisnika</th>
-            <th>Datum transakcije</th>
-            <th>Priliv/odliv</th>
-            <th>Iznos</th>
-            <th>Svrha plaćanja</th>
-            <th>Stanje</th>
+            <th class="sortable">Račun korisnika</th>
+            <th class="sortable" >Datum transakcije</th>
+            <th class="sortable">Iznos</th>
+            <th class="sortable">Stanje</th>
 
          </tr>
         </thead>
-        <tbody>
+        <tbody id="resulttable_body">
+        {% for item in data %}
           <tr>
-           <td></td>
-           <td></td>
-           <td></td>
-           <td></td>
-           <td></td>
-           <td></td>
+              <td>{{item.receiver}}</td>
+              <td>{{item.date}}</td>
+              <td>{{item.amount}}</td>
+              <td>{{item.state}}</td>
 
           </tr>
+        {% endfor %}
          </tbody>
     </table>
 
@@ -151,7 +202,9 @@
         }       
       }
     }
-    </script>
+  </script>
 
 </body>
+
+
 </html>

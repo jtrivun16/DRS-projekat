@@ -1,6 +1,6 @@
 from __init__ import db
 from wtforms.validators import ValidationError
-from Models import User, PaymentCard, OnlineAccount
+from Models import User, PaymentCard, OnlineAccount, Transaction
 
 
 # db models
@@ -104,5 +104,15 @@ class OnlineAccount(db.Model, OnlineAccount.OnlineAccount):
     #     payment_card = PaymentCard.query.filter_by(card_number=card_num.data)
     #     payment_card.balance += amount
     #
+
+
+class Transaction(db.Model, Transaction.Transaction):
+    id = db.Column(db.Integer, primary_key=True)
+    transaction_number = db.Column(db.Integer, primary_key=True)
+    sender = db.Column(db.String(20), nullable=False)
+    receiver = db.Column(db.String(20), nullable=False)
+    date = db.Column(db.Date, nullable=False)
+    state = db.Column(db.String(20), nullable=False)  # TODO napravi sa enumom
+    amount = db.Column(db.Integer, nullable=False)
 
 

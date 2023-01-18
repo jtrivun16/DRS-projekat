@@ -1,11 +1,11 @@
-from database_models import User, PaymentCard, OnlineAccount
+from database_models import User, PaymentCard, OnlineAccount,Transaction
 from __init__ import db, bcrypt
 
 
 def update_user_data(form, current_user):  # used to save user data from form into db
     hashed_password = bcrypt.generate_password_hash(form.password.data)
 
-    user = get_user(current_user.username)
+    user = get_user_by_username(current_user.username)
     user.username = form.username.data
     user.first_name = form.first_name.data
     user.last_name = form.last_name.data
@@ -21,7 +21,7 @@ def update_user_data(form, current_user):  # used to save user data from form in
 def update_user_data_verification(user):  # used to save user data into db
     # hashed_password = bcrypt.generate_password_hash(user.password)
 
-    loaded_user = get_user(user.username)
+    loaded_user = get_user_by_username(user.username)
     loaded_user.username = user.username
     loaded_user.first_name = user.first_name
     loaded_user.last_name = user.last_name
@@ -35,11 +35,20 @@ def update_user_data_verification(user):  # used to save user data into db
     print(user.verified)
 
 
-def get_user(username):
+def get_user_by_username(username):
     user = User.query.filter_by(username=username).first()
     if user:
         return user
     print("Can't get user form db")
+    #TODO else
+
+
+def get_user_by_email(email):
+    user = User.query.filter_by(email=email).first()
+    if user:
+        return user
+    print("Can't get user form db")
+    # TODO else
 
 
 def get_payment_card(acc_num):
@@ -54,3 +63,10 @@ def get_online_account(acc_num):
     if account:
         return account
     print("Can't get online account form db")
+
+
+def get_transaction(transaction_num):
+    transaction = Transaction.query.filter_by(transaction_number=transaction_num).first()
+    if transaction is not None:
+        return transaction
+    return None
