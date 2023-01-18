@@ -1,10 +1,11 @@
 import threading
 from multiprocessing import Queue
+from xml.dom import ValidationErr
 from Models import Transaction
 from flask import render_template, url_for, redirect, Blueprint, request
 from flask_login import login_required, current_user
 from database_functions import get_user, get_payment_card, get_online_account
-from forms import SendFundsToAnotherAccount, SendFundsToMyAccount
+from forms import SendFundsToAnotherAccount, SendFundsToMyAccount, ValidateAccount
 from time import sleep
 from __init__ import db
 
@@ -40,10 +41,15 @@ def history():
 
 
 def payoff_from_payment_card(amount, card_num):
+    form = ValidateAccount()
     payment_card = get_payment_card(card_num)
     if payment_card.balance >= amount:
         payment_card.balance -= amount
         return True
+    else:
+        error_message = 'Nemate dovoljan iznos na vasem racunu. Neuspesna verifikacija.'
+        return render_template('accountVerification.html',error_message =  error_message, form = form)
+      
 
     # TODO else throw error that he doesn't have that amount od money
 

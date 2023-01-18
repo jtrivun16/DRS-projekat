@@ -43,9 +43,6 @@ class User(db.Model, User.User):  # if some error occur check User Mixin class
     def validate_card_number(card_number):
         existing_user_card_number = User.query.filter_by(cardNumber=card_number.data).first()
         if not existing_user_card_number:
-            raise ValidationError(
-                "Card is not valid."
-            )
             return False
         return True
 
