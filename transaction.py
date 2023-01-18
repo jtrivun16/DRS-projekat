@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 import string
 import threading
 from multiprocessing import Queue
@@ -43,14 +43,13 @@ def history():
     return render_template("history.html", data=transaction_list)
 
 def payoff_from_payment_card(amount, card_num):
-    form = ValidateAccount()
     payment_card = get_payment_card(card_num)
     if payment_card.balance >= amount:
         payment_card.balance -= amount
         return True
     else:
         error_message = 'Nemate dovoljan iznos na vasem racunu. Neuspesna verifikacija.'
-        return render_template('accountVerification.html',error_message =  error_message, form = form)
+        return render_template('accountVerification.html',error_message=error_message)
       
 
     # TODO else throw error that he doesn't have that amount od money
@@ -84,15 +83,7 @@ def send_money():
                                payment_card_balance=payment_card.balance, form=form)
 # @transactions.route('/transactions', methods=['POST'])
 def init_transaction(form):
-    # content = request.json
-    # _id = getLastTransactionIndex()
-    # _sender = content['sender']
-    # _receiver = content['receiver']
-    # _amount = content['amount']
-    # _transaction_currecny = content['transactionCurrency']
-    # _date = content['date']
-    # _state = content['state']
-    # _rsdEquivalent = content['rsdEquivalent']
+
 
     sender = current_user.email  # TODO nemas ga
     if form.email.data != "":
@@ -101,7 +92,8 @@ def init_transaction(form):
             return
             #TODO neki error
         if receiver_user is not None:
-            receiver = get_payment_card(receiver_user.cardNumber)
+            card = get_payment_card(receiver_user.cardNumber)
+            receiver = str(card.card_number)
     elif form.cardNumber.data is not None:
         receiver = form.cardNumber.data
     # else:
@@ -109,7 +101,7 @@ def init_transaction(form):
 
     amount = form.amount.data
 
-    transaction_num = add_transaction(sender, str(receiver.card_number), amount)
+    transaction_num = add_transaction(sender, receiver, amount)
     new_transaction = get_transaction(transaction_num)
 
     thread = threading.Thread(target=transaction_thread, args=(new_transaction,))
