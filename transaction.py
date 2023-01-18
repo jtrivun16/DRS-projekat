@@ -12,6 +12,8 @@ import random
 
 from database_models import Transaction
 from database_functions import get_user_by_username, get_payment_card, get_online_account, get_user_by_email, get_transaction
+
+
 transactions = Blueprint('transactions', __name__)
 transactions_queue = Queue()
 
@@ -172,6 +174,7 @@ def transaction_process(queue: Queue):
             receiver_card.balance += transaction.amount
             tr.state = "Obradjeno"
             db.session.commit()
+
         else:
             tr.state = "Odbijeno"
             db.session.commit()
