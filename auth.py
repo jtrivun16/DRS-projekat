@@ -4,50 +4,15 @@ import random
 
 from flask import render_template, url_for, redirect, Blueprint, request
 from flask_login import login_user, logout_user, login_required, current_user
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, IntegerField, EmailField, BooleanField
 from wtforms.validators import InputRequired, Length, ValidationError
 from __init__ import db, bcrypt, login_manager
 from forms import RegisterForm, LoginForm, UpdateAccountForm, ValidateAccount
 from database_models import User, PaymentCard, OnlineAccount
-from database_functions import get_user, get_payment_card, update_user_data, update_user_data_verification, get_online_account
+from database_functions import get_user_by_username, get_payment_card, update_user_data, update_user_data_verification, get_online_account
 from transaction import payoff_from_payment_card
-import uuid
+
 
 auth = Blueprint('auth', __name__)
-
-
-# def update_user_data(form):  # used to save user data from form into db
-#     hashed_password = bcrypt.generate_password_hash(form.password.data)
-#
-#     user = get_user(form.username.data)
-#     user.username = form.username.data
-#     user.first_name = form.first_name.data
-#     user.last_name = form.last_name.data
-#     user.address = form.address.data
-#     user.town = form.town.data
-#     user.country = form.country.data
-#     user.phone_number = form.phone_number.data
-#     user.email = form.email.data
-#     user.password = hashed_password
-#     db.session.commit()
-#
-#
-# def update_user_data_verification(user):  # used to save user data into db
-#     # hashed_password = bcrypt.generate_password_hash(user.password)
-#
-#     loaded_user = get_user(user.username)
-#     loaded_user.username = user.username
-#     loaded_user.first_name user.last_name
-# #     loaded_user.address = user.address
-# #     loaded_user.town = user.town
-# #     loaded_user.country = user.country
-# #     loaded_user.phone_number = user.phone_number
-# #     loaded_user.email = user.email
-# #     loaded_user.password = user.password
-# #     db.session.commit()
-# #     print(user.verified)= user.first_name
-#     loaded_user.last_name =
 
 
 @login_manager.user_loader  # reload user obj from the user id stored in the session
@@ -61,13 +26,14 @@ def login(login_error=None):
     if not form.validate_on_submit():
         return render_template('login.html', form=form)
     else:
-        user = get_user(form.username.data)
+        user = get_user_by_username(form.username.data)
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             load_user(user.id)
             login_user(user)
             return redirect(url_for('views.dashboard'))
         else:
-            raise ValidationError('wrong username or password')
+            error_message = 'wrong username or password'
+            return render_template('login.html',error_message =  error_message, form = form)
 
 
 @auth.route('/logout', methods=['GET', 'POST'])
@@ -80,7 +46,7 @@ def logout():
 @auth.route('/status')
 @login_required
 def status():  # this function check if user account is verified
-    user = get_user(current_user.username)
+    user = get_user_by_username(current_user.username)
     online_account = get_online_account(user.onlineCardNumber)
     if user.is_verified:
         return render_template('statusCheck.html', visibility="hidden", balance=online_account.balance)
@@ -97,31 +63,34 @@ def account_verification():
     else:
         card_number = form.card_number
         print(card_number.data)
-        # TODO check card number if ok than and message
         # PaymentCard.pay_in(1,card_number.data)
-        if current_user.validate_card_number(card_number):
+        if not current_user.validate_card_number(card_number):
+            error_message = 'Uneli ste neispravan broj kartice. Pokusajte ponovo.'
+            return render_template('accountVerification.html',error_message =  error_message, form = form)
+        else:
             if payoff_from_payment_card(1, card_number.data):  # payoff one dollar
                 current_user.verified = True
                 update_user_data_verification(current_user)
                 db.session.commit()
                 return redirect(url_for('auth.status'))
-            # else  no money error
-        # else return render_template('accountVerification.html')
-
+            else:
+                error_message = 'Nemate dovoljan iznos na vasem racunu. Neuspesna verifikacija.'
+                return render_template('accountVerification.html',error_message =  error_message, form = form)
+        
 
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
 
     if form.validate_on_submit():
+        #TODO check if mail exists alredy
         username = save_user_data(form)
         user = User.query.filter_by(username=username).first()
         user.cardNumber = create_payment_card(user.id, user.username)
         user.onlineCardNumber = create_online_account(user.username, user.email)
         db.session.commit()
         return redirect(url_for('auth.login'))
-
-    print(form.errors)
+    #error_message = form.errors
     return render_template('register.html', form=form)
 
 

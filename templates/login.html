@@ -20,7 +20,7 @@
             
         }
         .myDiv{
-            height: 200px;
+            height: 220px;
             width: 30%;
             border: 2px outset beige ;
             
@@ -47,7 +47,7 @@
     
 </head>
 <body>
-    
+
     <h1>Prijava korisnika</h1>
     <div class="myDiv">
         <form method="POST" action="">
@@ -58,7 +58,11 @@
             {{ form.password() }}<br><br>
             {{ form.submit() }}
         </form>
+        {% if error_message %}
+        <p style="color:red">{{ error_message }}</p>
+        {% endif %} 
     </div>
+
     
     <!--make this disappear when click start typing again-->
      {% with messages = get_flashed_messages(with_categories=true) %}
@@ -70,7 +74,8 @@
             {% endfor %}
         {% endif %}
     {% endwith %}
-
+<br>
+<br>
     <a>Niste registrovani? <a href="{{url_for('auth.register')}}">Registruj se sada</a></a>
 </body>
 </html>
