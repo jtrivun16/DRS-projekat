@@ -40,7 +40,7 @@ def get_user_by_username(username):
     if user:
         return user
     print("Can't get user form db")
-    #TODO else
+
 
 
 def get_user_by_email(email):
