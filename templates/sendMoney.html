@@ -99,7 +99,9 @@
     <!--  <button class="button button1">Prihvati</button>-->
       <br>
 
-      
+        {% if error_message %}
+        <p style="color:red">{{ error_message }}</p>
+        {% endif %}
       
       <a href="{{url_for('transactions.back')}}">Vrati se na prethodnu stranicu </a>
       </div>

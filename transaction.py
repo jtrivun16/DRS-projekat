@@ -3,7 +3,7 @@ import string
 import threading
 from multiprocessing import Queue
 from xml.dom import ValidationErr
-from flask import render_template, url_for, redirect, Blueprint, request
+from flask import render_template, url_for, redirect, Blueprint, request,flash
 from flask_login import login_required, current_user
 from forms import SendFundsToAnotherAccount, SendFundsToMyAccount, ValidateAccount
 from time import sleep
@@ -16,6 +16,7 @@ from database_functions import get_user_by_username, get_payment_card, get_onlin
 
 transactions = Blueprint('transactions', __name__)
 transactions_queue = Queue()
+
 
 @transactions.route('/dashboard', methods=['GET', 'POST'])
 @login_required
@@ -30,7 +31,6 @@ def balance_check():
 
     if request.method == 'POST':
         send_funds_to_online_account(form.amount.data)
-        return redirect(url_for('auth.status'))
 
     user = get_user_by_username(current_user.username)
     online_account = get_online_account(user.onlineCardNumber)
@@ -50,11 +50,8 @@ def payoff_from_payment_card(amount, card_num):
         payment_card.balance -= amount
         return True
     else:
-        error_message = 'Nemate dovoljan iznos na vasem racunu. Neuspesna verifikacija.'
-        return render_template('accountVerification.html',error_message=error_message)
-      
+       return False
 
-    # TODO else throw error that he doesn't have that amount od money
 
 
 def add_funds_to_online_account(amount, acc_number):
@@ -68,15 +65,27 @@ def send_funds_to_online_account(amount):
 
     if payoff_from_payment_card(amount, user.cardNumber):
         add_funds_to_online_account(amount, user.onlineCardNumber)
+        return redirect(url_for('auth.status'))
+    else:
+        error_message = 'Nemate dovoljan iznos na vasem racunu.'
+        # return render_template('payIn.html, error_message=error_message)
+        flash(error_message)
+
+
 
 @transactions.route('/sendMoney', methods=['GET', 'POST'])
 @login_required
 def send_money():
+
     form = SendFundsToAnotherAccount()
 
     if request.method == 'POST':
-        init_transaction(form)
-        return redirect(url_for('transactions.history'))
+        if init_transaction(form):
+            return redirect(url_for('transactions.send_money'))
+        else:
+            error_message = "Doslo je do greske, proverite da su uneti podaci ispravni ili da li je korisnik verifikovan"
+            return render_template("sendMoney.html",form=form, error_message=error_message)
+        # TODO ako vrati vrati na history ili poruka za uspesnu/neuspesnu transakciju
     else:
         user = get_user_by_username(current_user.username)
         online_account = get_online_account(user.onlineCardNumber)
@@ -85,14 +94,13 @@ def send_money():
                                payment_card_balance=payment_card.balance, form=form)
 # @transactions.route('/transactions', methods=['POST'])
 def init_transaction(form):
-
-
     sender = current_user.email  # TODO nemas ga
     if form.email.data != "":
         receiver_user = get_user_by_email(form.email.data)
         if not receiver_user.verified:
-            return
-            #TODO neki error
+            return False
+
+
         if receiver_user is not None:
             card = get_payment_card(receiver_user.cardNumber)
             receiver = str(card.card_number)
@@ -178,3 +186,4 @@ def transaction_process(queue: Queue):
         else:
             tr.state = "Odbijeno"
             db.session.commit()
+
