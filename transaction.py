@@ -41,7 +41,7 @@ def balance_check():
 
 @transactions.route('/history', methods=['GET', 'POST'])
 def history():
-    transaction_list = Transaction.query.all()
+    transaction_list = Transaction.query.filter_by(sender=current_user.email).all()
     return render_template("history.html", data=transaction_list)
 
 def payoff_from_payment_card(amount, card_num):
@@ -92,25 +92,28 @@ def send_money():
         payment_card = get_payment_card(user.cardNumber)
         return render_template('sendMoney.html', acc_balance=online_account.balance,
                                payment_card_balance=payment_card.balance, form=form)
-# @transactions.route('/transactions', methods=['POST'])
+
+
+#check input data, create thread for transaction
 def init_transaction(form):
-    sender = current_user.email  # TODO nemas ga
+    sender = current_user.email
+
+    #if user enter email
     if form.email.data != "":
         receiver_user = get_user_by_email(form.email.data)
         if not receiver_user.verified:
             return False
-
-
         if receiver_user is not None:
             card = get_payment_card(receiver_user.cardNumber)
             receiver = str(card.card_number)
+
+    # if user enter card number
     elif form.cardNumber.data is not None:
         receiver = form.cardNumber.data
-    # else:
-        # TODO handle error
+    else:
+        return False
 
     amount = form.amount.data
-
     transaction_num = add_transaction(sender, receiver, amount)
     new_transaction = get_transaction(transaction_num)
 
@@ -147,7 +150,7 @@ def add_transaction(sender: str, receiver: int, amount: float):
     return transaction_number
 
 
-# just check if this transaction alredy exists
+# just check if this transaction number alredy exists
 def transaction_exists(transaction_num):
     transaction = get_transaction(transaction_num)
     if transaction is not None:
