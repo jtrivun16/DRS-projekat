@@ -3,6 +3,8 @@ import string
 import random
 
 from flask import render_template, url_for, redirect, Blueprint, request
+import requests
+import os
 from flask_login import login_user, logout_user, login_required, current_user
 from wtforms.validators import InputRequired, Length, ValidationError
 from __init__ import db, bcrypt, login_manager
@@ -199,5 +201,41 @@ def back():
 #     return render_template('history.html')
 
 #  db access function
+
+
+if 'API_KEY' in os.environ:
+    API_KEY = os.environ['API_KEY']
+else:
+    API_KEY = '34XNFFOAI313821W'
+
+@auth.route('/convert', methods=['GET', 'POST'])
+@login_required
+def convert():
+	if request.method == 'POST':
+		try:
+			amount = request.form['amount']
+			amount = float(amount)
+			from_c = request.form['from_c']
+			to_c = request.form['to_c']
+			url = 'https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency={}&to_currency={}&apikey={}'.format(
+				from_c, to_c, API_KEY)
+			response = requests.get(url=url).json()
+			rate = response['Realtime Currency Exchange Rate']['5. Exchange Rate']
+			rate = float(rate)
+			result = rate * amount
+			from_c_code = response['Realtime Currency Exchange Rate']['1. From_Currency Code']
+			from_c_name = response['Realtime Currency Exchange Rate']['2. From_Currency Name']
+			to_c_code = response['Realtime Currency Exchange Rate']['3. To_Currency Code']
+			to_c_name = response['Realtime Currency Exchange Rate']['4. To_Currency Name']
+			time = response['Realtime Currency Exchange Rate']['6. Last Refreshed']
+			return render_template('convert.html', result=round(result, 2), amount=amount,
+								from_c_code=from_c_code, from_c_name=from_c_name,
+								to_c_code=to_c_code, to_c_name=to_c_name, time=time)
+		except Exception as e:
+			return '<h1>Bad Request : {}</h1>'.format(e)
+
+	else:
+		return render_template('convert.html')
+
 
 
