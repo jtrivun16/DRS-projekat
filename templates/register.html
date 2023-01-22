@@ -4,24 +4,36 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: center/cover url("../static/pozadina.jpg") fixed no-repeat;
+
+        }
         h1{
             text-align: center;
             font-size: 36px;
+            color: white;
         }
 
         .myDiv{
             height: 450px;
             width: 50%;
             border: 3px outset beige ;
-            background-color: burlywood;
             text-align: center;
+            margin-right: auto;
             position: relative;
             left: 320px;
 
         }
 
         label{
+            /*display: table;*/
+            
             font-size: 20px;
+            background-color: rgb(17, 179, 228);
+            color: black;
         }
 
         a{
@@ -37,23 +49,23 @@
    <div class="myDiv">
         <form method="POST" action="">
             {{ form.hidden_tag() }}
-            <label> Korisničko ime </label>
+            <br><label> Korisničko ime </label> &nbsp 
             {{ form.username() }}<br><br>
-            <label> Ime </label>
+            <label> Ime </label> &nbsp 
             {{ form.first_name() }}<br><br>
-            <label> Prezime </label>
+            <label> Prezime </label> &nbsp
             {{ form.last_name() }}<br><br>
-            <label> Adresa </label>
+            <label> Adresa </label> &nbsp
             {{ form.address() }}<br><br>
-            <label> Grad </label>
+            <label> Grad </label> &nbsp
             {{ form.town() }}<br><br>
-            <label> Država </label>
+            <label> Država </label> &nbsp
             {{ form.country() }}<br><br>
-            <label> Broj telefona </label>
+            <label> Broj telefona </label> &nbsp
             {{ form.phone_number() }}<br><br>
-            <label> E-mail </label>
+            <label> E-mail </label> &nbsp
             {{ form.email() }}<br><br>
-            <label> Lozinka </label>
+            <label> Lozinka </label> &nbsp
             {{ form.password() }}<br><br>
             
             {{ form.submit() }}

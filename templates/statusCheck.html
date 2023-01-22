@@ -60,6 +60,7 @@
   }
   
   .button1 {background-color: #008CBA;} /* Blue */
+  .button2 {background-color: #5c0000;}
     </style>
 </head>
 <body>
@@ -80,6 +81,9 @@
         <button type="submit" class="button button1">Verifikuj nalog</button>
       </a>
 
+	  <a href="{{url_for('auth.convert')}}">
+        <button type="submit" class="button button2">Konvertuj</button>
+      </a>
   <br>
   <br>
   <br>
@@ -93,3 +97,5 @@
   </div>
 </body>
 </html>
+
+

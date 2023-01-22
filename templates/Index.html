@@ -6,7 +6,7 @@
     <style>
         body{
             font-family: Arial, Helvetica, sans-serif;
-            background: right/50% 100% url("../static/home.jpg") no-repeat;
+            background: center/cover  url("../static/bankingg.webp") fixed no-repeat;
 
         }
         html {
@@ -18,7 +18,7 @@
         h1{
             
             font-size: 50px;
-            color: black;
+            color: white;
             font-family: serif;
         }
 
@@ -29,14 +29,14 @@
             position: relative;
             left: 120px;
             font-family: serif;
-            color: black;
+            color: white;
         }
         h2{
             text-align: center;
             font-size: 30px;
             position: relative;
             font-family: serif;
-            color: black;
+            color: white;
         }
         .outer {
             display: grid;
@@ -50,7 +50,7 @@
           .outer .div1 {
             height: 70px;
             width: 20%;      
-            border: 3px outset black;
+            border: 0px outset #04122b;
       
             position: relative;
             left: 180px;
@@ -73,10 +73,7 @@
 <div class="outer">
     <div class="div1">
         <a href="{{url_for('auth.login')}}">Prijavi se</a> <br>
-        <hr width="200px;" 
-        color="black" 
-        size="3" 
-        align="center">
+        <br>
         <a href="{{url_for('auth.register')}}">Registruj se</a>
     </div>
     <br>
