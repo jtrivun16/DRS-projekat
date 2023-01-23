@@ -5,10 +5,60 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Real Time Currency Converter</title>
 	<style>
+	    body, html {
+        height: 100%;
+        margin: 0;
+        background: center/cover url("../static/bank.jpg") fixed no-repeat;
+        }
 		.container {
 		max-width: 500px;
 		margin: auto;
 		}
+
+        a:link, a:visited {
+        color: #221647;
+        text-decoration: underline;
+        cursor: pointer;
+        font-size:20px;
+        font-family: serif;
+        }
+        p{
+        font-family: serif;
+        font-size:25px;
+        color: #221647;
+        }
+        a:hover{
+        border:1px solid black;
+        }
+        h1{
+        text-align: center;
+        font-size: 40px;
+        color: #221647;
+        font-family: serif;
+        }
+        .myDiv{
+        height: 500px;
+        width: 20%;
+        border: 3px outset #221647 ;
+        text-align: center;
+        position: relative;
+        top: 50px;
+        left: 600px;
+        }
+        table, th, td {
+        border:1px solid black;
+        }
+        .button {
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        }
 	</style>
         <script>
         var inputKolicina = document.getElementById('inputKolicina');
@@ -22,27 +72,34 @@
 </head>
 
 <body>
- <form class = "form-signin" action="/convert" method="post">
+  <div class="myDiv">
 
-        <label for="inputKolicina" class = "sr-only"> Kolicina novca </label>
-        <input type = "number" name="inputKolicina" id="inputKolicina" class="form-control" placeholder="Kolicina" required autofocus></br>
+     <form class = "form-signin" action="/convert" method="post">
+            <p for="inputKolicina" class = "sr-only"> Kolicina novca </p>
+            <input type = "number" name="inputKolicina" id="inputKolicina" class="form-control" placeholder="Kolicina" required autofocus></br>
 
-        <div class="form-group">
-          <label>Valuta</label>
-          <select name="inputValuta" id="sub_category_id" class="form-control">
-             <option value="" selected="selected"></option>
-              {% for currency in currencies %}
-              <option value="{{currency.currency}}">{{currency.currency}}</option>
-              {% endfor %}
-          </select>
-        </div>
+            <div class="form-group">
+              <p>Valuta</p>
+              <select name="inputValuta" id="sub_category_id" class="form-control">
+                 <option value="" selected="selected"></option>
+                  {% for currency in currencies %}
+                  <option value="{{currency.currency}}">{{currency.currency}}</option>
+                  {% endfor %}
+              </select>
+            </div>
 
 
-        <label><input id="outputVrednost" name="value" readonly></label>
-        <input type="submit" value="Excange">
- </form>
+            <p><input id="outputVrednost" name="value" readonly></p>
+            <input type="submit" value="Konvertuj">
+     </form>
         {% if error_message %}
         <p style="color:red">{{ error_message }}</p>
         {% endif %}
+      <br>
+      <br>
+      <br>
+        <a href="{{url_for('auth.back')}}">Vrati se na opcije</a>
+
+  </div>
 </body>
 </html>

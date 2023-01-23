@@ -3,7 +3,7 @@ import json
 import string
 import random
 
-import self as self
+#import self as self
 import sqlalchemy
 from flask import render_template, url_for, redirect, Blueprint, request, flash
 import requests
