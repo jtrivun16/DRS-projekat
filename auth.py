@@ -12,7 +12,7 @@ from wtforms.validators import InputRequired, Length, ValidationError
 from __init__ import db, bcrypt, login_manager
 from forms import RegisterForm, LoginForm, UpdateAccountForm, ValidateAccount, ConversionForm
 from database_models import User, PaymentCard, OnlineAccount
-from database_functions import get_user_by_username, get_payment_card, update_user_data, update_user_data_verification, get_online_account
+from database_functions import get_user_by_username, get_payment_card, update_user_data, update_user_data_verification, get_online_account, get_user_by_email
 from transaction import payoff_from_payment_card
 
 
@@ -31,13 +31,13 @@ def login(login_error=None):
     if not form.validate_on_submit():
         return render_template('login.html', form=form)
     else:
-        user = get_user_by_username(form.username.data)
+        user = get_user_by_email(form.email.data)
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             load_user(user.id)
             login_user(user)
             return redirect(url_for('views.dashboard'))
         else:
-            error_message = 'wrong username or password'
+            error_message = 'wrong email or password'
             return render_template('login.html',error_message =  error_message, form = form)
 
 
