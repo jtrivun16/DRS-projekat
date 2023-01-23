@@ -3,6 +3,7 @@ import json
 import string
 import random
 
+import self as self
 import sqlalchemy
 from flask import render_template, url_for, redirect, Blueprint, request, flash
 import requests
@@ -241,16 +242,73 @@ def convert():
 
             acc.balance -= int(amount);
             db.session.commit();
-            return render_template("statusCheck.html")
+            return redirect(url_for("auth.balances"))
 
         else:
-            error_message = ""
-            flash(error_message)
-            return render_template("convert.html", currencies=currencies, form=form)
+            error_message = "Nemate dovoljno novca "
+            return render_template("convert.html", currencies=currencies, form=form , error_message=error_message)
 
     else:
         return render_template("convert.html", currencies=currencies, form=form)
     #print(form.amount)
+
+
+# get from db blance in all currencies
+@auth.route('/balances', methods=["POST", "GET"])
+@login_required
+def balances():
+    class item():
+        def __init__(self, currency: str, value: int):
+            self.currency = currency
+            self.value = value
+
+    acc = get_online_account(current_user.onlineCardNumber)
+    my_accounts = []
+
+    columns = [i[1] for i in db.engine.execute('PRAGMA table_info(online_account)')]
+    columns = columns[5:]
+
+    for x in columns:
+        if x == 'EUR':
+            it = item(x, acc.EUR)
+        elif x == 'USD':
+            it = item(x, acc.USD)
+        elif x == 'ADA':
+            it = item(x, acc.ADA)
+        elif x == 'AED':
+            it = item(x, acc.AED)
+        elif x == 'AFN':
+            it = item(x, acc.AFN)
+        elif x == 'AMG':
+            it = item(x, acc.AMG)
+        elif x == 'ALL':
+            it = item(x, acc.ALL)
+        elif x == 'AMD':
+            it = item(x, acc.AMD)
+        elif x == 'ARS':
+            it = item(x, acc.ARS)
+        elif x == 'AOA':
+            it = item(x, acc.AOA)
+        elif x == 'ANG':
+            it = item(x, acc.ANG)
+        elif x == 'AUD':
+            it = item(x, acc.AUD)
+        elif x == 'AWAX':
+            it = item(x, acc.AWAX)
+        elif x == 'AWG':
+            it = item(x, acc.AWG)
+        elif x == 'AZN':
+            it = item(x, acc.AZN)
+
+
+
+
+        if it.value != None and it.value > 0:
+            my_accounts.append(it)
+
+    return render_template("balances.html", my_accounts=my_accounts)
+
+
 
 
 def getCurrenciesList():

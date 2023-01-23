@@ -82,6 +82,25 @@ class OnlineAccount(db.Model, OnlineAccount.OnlineAccount):
     user_name = db.Column(db.String(20), nullable=False)
     user_email = db.Column(db.String(20), unique=True, nullable=False)
     balance = db.Column(db.Integer, nullable=False)
+    EUR = db.Column(db.String())
+    USD = db.Column(db.String())
+    ADA = db.Column(db.String())
+    AED = db.Column(db.String())
+    AFN = db.Column(db.String())
+    AMG = db.Column(db.String())
+
+    ALL = db.Column(db.String())
+    AMD = db.Column(db.String())
+    ARS = db.Column(db.String())
+    AOA = db.Column(db.String())
+    ANG = db.Column(db.String())
+    AUD = db.Column(db.String())
+    AWAX = db.Column(db.String())
+    AWG = db.Column(db.String())
+    AZN = db.Column(db.String())
+
+
+
     # foreign key - specify that we have relationship to the user model
 
     # def __repr__(self):

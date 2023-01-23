@@ -40,7 +40,9 @@
 
         <label><input id="outputVrednost" name="value" readonly></label>
         <input type="submit" value="Excange">
-
  </form>
+        {% if error_message %}
+        <p style="color:red">{{ error_message }}</p>
+        {% endif %}
 </body>
 </html>
