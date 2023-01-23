@@ -5,28 +5,19 @@
     <title>Edit profile</title>
     <style>
         body{
-            background: #221647;
+            font-family: Arial, Helvetica, sans-serif;
+            background: center/cover  url("../static/bankingg.webp") fixed no-repeat;
 
         }
-        .myDiv{
-            height: 600px;
-            width: 70%;
-            border: 3px outset beige ;
-            background-color: white;
-            text-align: center;
-            position: relative;
-            top: 50px;
-            left: 220px;
-        }
+        
         .tabela{
             height: 500px;
             width: 45%;
             border: 3px outset beige ;
-            background-color: beige;
             text-align: center;
             position: relative;
             top: 50px;
-            left: 280px;
+            left: 100px;
 
         }
         table{
@@ -35,6 +26,10 @@
             text-align:center;
             margin-left:auto;
             margin-right:auto;
+        }
+
+        label{
+            color: azure;
         }
 
         a:link, a:visited {
@@ -47,64 +42,46 @@
 <body>
     <a href="{{url_for('auth.back')}}">Vrati se na prethodnu stranicu <a/>
 
-   <div class="myDiv">
+    <form method="POST" action="" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <div class="tabela">
+            <fieldset class="form-group">
+            <legend class="border-bottom mb-4" style="color: azure;">Podaci o nalogu</legend>
 
-        <form method="POST" action="" enctype="multipart/form-data">
-            {{ form.hidden_tag() }}
-            <div class="tabela">
-                <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Podaci o nalogu</legend>
-
-                    <table>
-                    
-                        <tr><td><label>Korisnicko ime</label></td><td> {{ form.username }}</td></tr>
-                        <tr><td><label>Ime</label></td><td> {{ form.first_name}}</td></tr>
-                        <tr><td><label>Prezime</label></td><td> {{ form.last_name}}</td></tr>
-                        <tr><td><label>Adresa</label></td><td> {{ form.address}}</td></tr>
-                        <tr><td><label>Grad</label></td><td> {{ form.town}}</td></tr>
-                        <tr><td><label>Drzava</label></td><td> {{ form.country}}</td></tr>
-                        <tr><td><label>Broj telefona</label></td><td> {{ form.phone_number}}</td></tr>
-                        <tr><td><label>E-mail</label></td><td> {{ form.email}}</td></tr>
-                        <tr><td><label>Lozinka</label></td><td> {{ form.password}}</td></tr>
-                    </table>
+                <table>
                 
-                </fieldset>
-                 <div class="form-group" >
-                    {{ form.submit }}
-                </div>
-            {% if form.errors %}
-                {% for field in form %}
-                    {% for error in field.errors %}
-                        <div class="alert alert-danger">
-                            <strong style="color:red">{{ error|escape }}</strong>
-                        </div>
-                    {% endfor %}
-                {% endfor %}
-                {% for error in form.non_field_errors %}
+                    <tr><td><label>Korisnicko ime</label></td><td> {{ form.username }}</td></tr>
+                    <tr><td><label>Ime</label></td><td> {{ form.first_name}}</td></tr>
+                    <tr><td><label>Prezime</label></td><td> {{ form.last_name}}</td></tr>
+                    <tr><td><label>Adresa</label></td><td> {{ form.address}}</td></tr>
+                    <tr><td><label>Grad</label></td><td> {{ form.town}}</td></tr>
+                    <tr><td><label>Drzava</label></td><td> {{ form.country}}</td></tr>
+                    <tr><td><label>Broj telefona</label></td><td> {{ form.phone_number}}</td></tr>
+                    <tr><td><label>E-mail</label></td><td> {{ form.email}}</td></tr>
+                    <tr><td><label>Lozinka</label></td><td> {{ form.password}}</td></tr>
+                </table>
+            
+            </fieldset>
+                <div class="form-group" >
+                {{ form.submit }}
+            </div>
+        {% if form.errors %}
+            {% for field in form %}
+                {% for error in field.errors %}
                     <div class="alert alert-danger">
                         <strong style="color:red">{{ error|escape }}</strong>
                     </div>
                 {% endfor %}
-            {% endif %}
-            </div>
-                <!--label>Address</label>
-                {{ form.address}}
-
-                <label>Town</label>
-                {{ form.town}}
-
-                <label>Country</label>
-                {{ form.country}}
-
-                <label>Phone</label>
-                {{ form.phone_number}}-->
-
-              <!--  <label>Password</label>
-                {{ form.password}}-->
-
-
-
-        </form>
-    <div>
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                <div class="alert alert-danger">
+                    <strong style="color:red">{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endif %}
+        </div>
+                
+    </form>
+    
 </body>
 </html>
