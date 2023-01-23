@@ -105,3 +105,9 @@ class SendFundsToAnotherAccount(FlaskForm):
     amount = IntegerField(validators=[DataRequired(), NumberRange(min=1)])
     submit = SubmitField("Posalji")
     #TODO validation errors
+
+
+class ConversionForm(FlaskForm):
+    currency = IntegerField()
+    amount = IntegerField()
+    submit = SubmitField("Konvertuj")

@@ -1,17 +1,20 @@
 import datetime
+import json
 import string
 import random
 
-from flask import render_template, url_for, redirect, Blueprint, request
+import sqlalchemy
+from flask import render_template, url_for, redirect, Blueprint, request, flash
 import requests
 import os
 from flask_login import login_user, logout_user, login_required, current_user
 from wtforms.validators import InputRequired, Length, ValidationError
 from __init__ import db, bcrypt, login_manager
-from forms import RegisterForm, LoginForm, UpdateAccountForm, ValidateAccount
+from forms import RegisterForm, LoginForm, UpdateAccountForm, ValidateAccount, ConversionForm
 from database_models import User, PaymentCard, OnlineAccount
 from database_functions import get_user_by_username, get_payment_card, update_user_data, update_user_data_verification, get_online_account
 from transaction import payoff_from_payment_card
+
 
 
 auth = Blueprint('auth', __name__)
@@ -208,34 +211,71 @@ if 'API_KEY' in os.environ:
 else:
     API_KEY = '34XNFFOAI313821W'
 
-@auth.route('/convert', methods=['GET', 'POST'])
+
+@auth.route('/convert', methods=["POST", "GET"])
 @login_required
 def convert():
-	if request.method == 'POST':
-		try:
-			amount = request.form['amount']
-			amount = float(amount)
-			from_c = request.form['from_c']
-			to_c = request.form['to_c']
-			url = 'https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency={}&to_currency={}&apikey={}'.format(
-				from_c, to_c, API_KEY)
-			response = requests.get(url=url).json()
-			rate = response['Realtime Currency Exchange Rate']['5. Exchange Rate']
-			rate = float(rate)
-			result = rate * amount
-			from_c_code = response['Realtime Currency Exchange Rate']['1. From_Currency Code']
-			from_c_name = response['Realtime Currency Exchange Rate']['2. From_Currency Name']
-			to_c_code = response['Realtime Currency Exchange Rate']['3. To_Currency Code']
-			to_c_name = response['Realtime Currency Exchange Rate']['4. To_Currency Name']
-			time = response['Realtime Currency Exchange Rate']['6. Last Refreshed']
-			return render_template('convert.html', result=round(result, 2), amount=amount,
-								from_c_code=from_c_code, from_c_name=from_c_name,
-								to_c_code=to_c_code, to_c_name=to_c_name, time=time)
-		except Exception as e:
-			return '<h1>Bad Request : {}</h1>'.format(e)
+    form =ConversionForm()
+    currencies = getCurrenciesList()
+    if request.method == 'POST':
+        selecetd_currency = request.form.get("inputValuta")
+        amount = request.form.get("inputKolicina")
+        print(amount)
+        print(selecetd_currency)
+        rate = getSelectedCurrency(selecetd_currency)
+        print(rate)
 
-	else:
-		return render_template('convert.html')
+
+
+        acc =get_online_account(current_user.onlineCardNumber)
+        if(int(acc.balance) >= int(amount)):
+            converted_amount = float(amount)/rate
+
+            # check if column alredy exists if not create new column
+            columns = [i[1] for i in db.engine.execute('PRAGMA table_info(online_account)')]
+            if selecetd_currency not in columns:
+                db.engine.execute('''alter table online_account add ''' + selecetd_currency)
+
+            # inser a value intp a column
+            db.engine.execute("UPDATE online_account set " + selecetd_currency +" = " + str(converted_amount) + " where id = " + str(acc.id))
+
+            acc.balance -= int(amount);
+            db.session.commit();
+            return render_template("statusCheck.html")
+
+        else:
+            error_message = ""
+            flash(error_message)
+            return render_template("convert.html", currencies=currencies, form=form)
+
+    else:
+        return render_template("convert.html", currencies=currencies, form=form)
+    #print(form.amount)
+
+
+def getCurrenciesList():
+        req = requests.get(
+            "https://freecurrencyapi.net/api/v2/latest?apikey=JtmaFTvHLWOJmhG4JxVBiNT7u4J93nbTdzaSKeme&base_currency=RSD")
+        content = (req.json())['data']
+        currencies = []
+        # Converts every other currency in base currecy value
+        for key, value in content.items():
+            if (value != 0):
+                currency = {}
+                currency["currency"] = key
+                currency["value"] = 1 / value
+                currencies.append(currency)
+        return currencies
+
+def getSelectedCurrency(slecetd_currency):
+    currencies = getCurrenciesList()
+    for currency in currencies:
+        if slecetd_currency == currency["currency"]:
+            return currency["value"]
+
+
+
+
 
 
 
